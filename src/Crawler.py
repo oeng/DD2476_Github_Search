@@ -85,7 +85,7 @@ class Crawler:
             new_location = os.path.join(self.file_storage, new_location)
             if not os.path.exists(new_location[:-len(filename)]):
                 os.makedirs(new_location[:-len(filename)])
-            os.rename(filepath, new_location)
+            shutil.move(filepath, new_location)
 
         # Delete the temporary directory
         temp_dir.cleanup()
