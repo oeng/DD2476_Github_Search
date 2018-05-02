@@ -24,6 +24,12 @@ class Analyzer():
     """
     def parse_class_names(self):
         pass
+    
+    """
+    TODO: Generate tokens to index for a file, return JSON object that can be used by indexer.
+    """
+    def tokens_generator(self):
+        pass
 
 
 if __name__ == '__main__':
