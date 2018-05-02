@@ -1,5 +1,10 @@
+import glob
+import os
+
+
 def test():
-    print("Hello, KTH")
+    for filename, filepath, content in Analyzer().get_files_generator('download_repo/airbnb-lottie-android-c4502c1'):
+        print(filename)
 
 
 class Analyzer():
@@ -7,11 +12,20 @@ class Analyzer():
     def __init__(self):
         pass
 
-    """
-    TODO: Yield source code files one at a time (gustaf fixar)
-    """
     def get_files_generator(self, repo_path):
-        pass
+        """
+        Yield source code files one at a time
+
+        :type repo_path: file system path to a repo containing java files
+        :return tuple: (filename, filepath, content)
+        """
+        # Loop through all Java files in a repo
+        s = os.path.sep
+        for filepath in glob.iglob(repo_path + s + '**' + s + '*.java', recursive=True):
+            filename = os.path.basename(filepath)
+            with open(filepath, 'r') as f:
+                content = f.read()
+            yield filename, filepath, content
 
     """
     TODO: Parse function and method names from a java file
