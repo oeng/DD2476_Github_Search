@@ -27,22 +27,22 @@ class Analyzer():
                 content = f.read()
             yield filename, filepath, content
 
-    """
-    TODO: Parse function and method names from a java file
-    """
     def parse_function_names(self):
+        """
+        TODO: Parse function and method names from a java file
+        """
         pass
     
-    """
-    TODO: Parse class names from a java file
-    """
     def parse_class_names(self):
+        """
+        TODO: Parse class names from a java file
+        """
         pass
     
-    """
-    TODO: Generate tokens to index for a file, return JSON object that can be used by indexer.
-    """
     def tokens_generator(self):
+        """
+        TODO: Generate tokens to index for a file, return JSON object that can be used by indexer.
+        """
         pass
 
 
