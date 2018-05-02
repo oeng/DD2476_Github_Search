@@ -8,7 +8,7 @@ pip install -r requirements.txt
 ## Project Specification
 
 - [x] Crawl (a part of) the publicly available GitHub code.
-- [ ] Filter out one programming language that you feel comfortable with.
+- [x] Filter out one programming language that you feel comfortable with. (Java)
 - [ ] Process the files and separate class names, method names, modifiers (for example public, private, static, final etc.), variable names – things that you may want to search and filter!
 - [ ] Index it into elasticsearch (https://github.com/elastic/elasticsearch), or another search engine of your choice.
 - [ ] Create an interface where you can search and filter methods or classes based on the metadata you have created.
