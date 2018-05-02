@@ -2,9 +2,10 @@ class Indexer():
     def __init__(self):
         pass
 
-def main():
-    pass
-    
+    def index(self):
+        pass
+
 
 if __name__ == '__main__':
-    main()
+    index = Indexer()
+    index.index()
