@@ -1,6 +1,7 @@
 def test():
     print("Hello, KTH")
 
+
 class Analyzer():
     # Constructor
     def __init__(self):
@@ -23,6 +24,7 @@ class Analyzer():
     """
     def parse_class_names(self):
         pass
+
 
 if __name__ == '__main__':
     test()
