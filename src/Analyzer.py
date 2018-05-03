@@ -10,7 +10,7 @@ def test():
         print(filename)
 
 def test2():
-    for filename, filepath, content in Analyzer().get_files_generator('download_repo/airbnb-lottie-android-c4502c1'):
+    for filename, filepath, content in Analyzer().get_files_generator('download_repo/'):
         Analyzer().parse_class_names(filename, filepath, content)
 
 
@@ -89,7 +89,7 @@ class Analyzer():
                 classes.append((m.group(2),m.start(),m.end()))
         return classes
 
-    def check_brace_balance(self, filename, filepath, content, ):
+    def check_brace_balance(self, filename, filepath, content ):
         """
         Checks content for balanced braces while keeping content untouched.
         Reads per line for storage of row in index.
@@ -109,33 +109,34 @@ class Analyzer():
                 row += 1
                 line = next(it)
                 char_it = iter(line)
+                prev_c = '';
                 while True:
                     try:
                         c = next(char_it)
 
                         # Ignore while inside multirow comment
-                        if re.match(r'\/',c):
+                        if c == '/' and prev_c != ':':
                             c = next(char_it)
                             # multirow comment
-                            if re.match(r'\*',c):
+                            if c == '*':
                                 ignore_braces = True
-                            if re.match(r'\/',c):
+                            if c == '/':
                                 break
 
                         # Start reading in braces when outside of comment again
-                        if re.match(r'\*',c):
+                        if c =='*':
                             c = next(char_it)
-                            if re.match(r'\/',c):
+                            if c == '/':
                                 ignore_braces = False;
 
 
                         if not ignore_braces:
                             try:
                                 # Matching on left-side brace. Add to stack
-                                if re.match(r'\(|{',c):
+                                if c == '(' or c == '{':
                                     stack.append(c)
                                 # Matching of right-side ). Pop stack
-                                if re.match(r'\)',c):
+                                if c == ')':
                                     if stack[-1] == '(':
                                         stack.pop()
                                     else:
@@ -143,7 +144,7 @@ class Analyzer():
                                         print("Line %s: found (), whould have been {}" % row)
                                         return False
                                 # Matching of right-side }. Pop stack
-                                if re.match(r'}',c):
+                                if c == '}':
                                     if stack[-1] == '{':
                                         stack.pop()
                                     else:
@@ -154,6 +155,7 @@ class Analyzer():
                                 print("\nBad format: " + filepath + filename)
                                 print("Line %s: pop on empty stack. Uneven braces." % row)
                                 return False
+                        prev_c = c;
                     except StopIteration:
                         break;
 
