@@ -33,6 +33,12 @@ class Analyzer():
             yield filename, filepath, content
 
     def parse_function_names(self, content):
+        """
+        Find all method/function names and positions in a given text
+
+        :type content: string
+        :return list of tuple: [(method/function name, start_pos, end_pos)]
+        """
         matches = []
         # Pattern for finding the start of Java functions/methods
         pattern = "(public|protected|private|static|\s) +[\w\<\>\[\]]+\s+(\w+) *\([^\)]*\) *(\{?|[^;])"
@@ -54,6 +60,14 @@ class Analyzer():
         return matches
 
     def find_block_end(self, content, start_pos):
+        """
+        Finds the end position of a method/function in a text, given the start position.
+
+        :type content: string
+        :type start_pos: integer representing the start position of a method/function in content
+        :return integer: end position of the method/function
+        """
+        # TODO:
         end_pos = -1
         return end_pos
 
