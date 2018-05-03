@@ -11,7 +11,8 @@ def test():
 
 def test2():
     for filename, filepath, content in Analyzer().get_files_generator('download_repo/'):
-        Analyzer().parse_class_names(filename, filepath, content)
+        classes = Analyzer().parse_class_names(filename, filepath, content)
+        print(classes)
 
 
 class Analyzer():
@@ -85,8 +86,15 @@ class Analyzer():
         match = re.finditer(r"(?:(?:(public|private|protected|static|final|abstract)\s+)*)" +
                               "(?:class\s+)(\w+)\s*((extends\s+\w+\s*)|(implements\s+(\s*\w+\s*,)*\s*\w+\s*))*(?={)", content)
         for m in match:
-            if(Analyzer().check_brace_balance(filename, filepath, content)):
-                classes.append((m.group(2),m.start(),m.end()))
+            try:
+                ok, end_row = Analyzer().check_brace_balance(filename, filepath, content)
+            except IndexError:
+                print("parse_class_names: IndexError in {f}".format(f=filename))
+                continue
+            if ok:
+                classes.append((m.group(2), m.start(), end_row))
+            else:
+                print(":parse_class_names: found misaligned parantheses, skipping file")
         return classes
 
     def check_brace_balance(self, filename, filepath, content ):
@@ -120,11 +128,11 @@ class Analyzer():
                             # multirow comment
                             if c == '*':
                                 ignore_braces = True
-                            if c == '/':
+                            elif c == '/':
                                 break
 
                         # Start reading in braces when outside of comment again
-                        if c =='*':
+                        if c == '*':
                             c = next(char_it)
                             if c == '/':
                                 ignore_braces = False;
@@ -139,22 +147,28 @@ class Analyzer():
                                 if c == ')':
                                     if stack[-1] == '(':
                                         stack.pop()
+                                        # If matching paranthesis found and stack is empty, we have found end of block
+                                        if len(stack) == 0:
+                                            return True, row
                                     else:
                                         print("\nBad format: " + filepath + filename)
                                         print("Line %s: found (), whould have been {}" % row)
-                                        return False
+                                        return False, -1
                                 # Matching of right-side }. Pop stack
                                 if c == '}':
                                     if stack[-1] == '{':
                                         stack.pop()
+                                        # If matching paranthesis found and stack is empty, we have found end of block
+                                        if len(stack) == 0:
+                                            return True, row
                                     else:
                                         print("\nBad format: " + filepath + filename)
                                         print("Line %s: found (), whould have been {}" % row)
-                                        return False
+                                        return False, -1
                             except IndexError:
                                 print("\nBad format: " + filepath + filename)
                                 print("Line %s: pop on empty stack. Uneven braces." % row)
-                                return False
+                                return False, -1
                         prev_c = c;
                     except StopIteration:
                         break;
@@ -165,11 +179,11 @@ class Analyzer():
         # Make sure stack is empty
         if not stack:
             print("File ok.")
-            return True;
+            return True, -1
         else:
             print("\nBad format: " + filepath + filename)
             print("Line %s: [EOF]" % row)
-            return False;
+            return False, -1
 
     def tokens_generator(self):
         """
