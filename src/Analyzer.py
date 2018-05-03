@@ -1,10 +1,7 @@
 import glob
 import os
+import re
 
-
-def test():
-    for filename, filepath, content in Analyzer().get_files_generator('download_repo/airbnb-lottie-android-c4502c1'):
-        print(filename)
 
 
 class Analyzer():
@@ -32,19 +29,31 @@ class Analyzer():
         TODO: Parse function and method names from a java file
         """
         pass
-    
-    def parse_class_names(self):
+
+    def parse_class_names(self, filename, filepath, content):
         """
         TODO: Parse class names from a java file
         """
-        pass
-    
+        classes = []
+        match = re.finditer(r"(?:(?:(public|private|protected|static|final|abstract)\s+)*)" +
+                              "(?:class\s+)(\w+)\s*((extends\s+\w+\s*)|(implements\s+(\s*\w+\s*,)*\s*\w+\s*))*(?={)", content)
+        for m in match:
+            classes.append((m.group(2),m.start(),m.end()))
+        return classes
+
     def tokens_generator(self):
         """
         TODO: Generate tokens to index for a file, return JSON object that can be used by indexer.
         """
         pass
 
+def test():
+    for filename, filepath, content in Analyzer().get_files_generator('download_repo/airbnb-lottie-android-c4502c1'):
+        print(filename)
+
+def test2():
+    for filename, filepath, content in Analyzer().get_files_generator('download_repo/airbnb-lottie-android-c4502c1'):
+        Analyzer().parse_class_names(filename, filepath, content)
 
 if __name__ == '__main__':
-    test()
+    test2()
