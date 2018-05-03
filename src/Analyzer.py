@@ -1,10 +1,15 @@
 import glob
 import os
+import re
 
 
 def test():
     for filename, filepath, content in Analyzer().get_files_generator('download_repo/airbnb-lottie-android-c4502c1'):
         print(filename)
+
+def test2():
+    for filename, filepath, content in Analyzer().get_files_generator('download_repo/airbnb-lottie-android-c4502c1'):
+        Analyzer().parse_class_names(filename, filepath, content)
 
 
 class Analyzer():
@@ -27,18 +32,60 @@ class Analyzer():
                 content = f.read()
             yield filename, filepath, content
 
-    def parse_function_names(self):
+    def parse_function_names(self, content):
         """
-        TODO: Parse function and method names from a java file
+        Find all method/function names and positions in a given text
+
+        :type content: string
+        :return list of tuple: [(method/function name, start pos, end pos)]
         """
-        pass
-    
-    def parse_class_names(self):
+        matches = []
+        # Pattern for finding the start of Java functions/methods
+        # TODO: Ange källa för regexet i pattern (stackoverflow), eller skriva egen version senare
+        pattern = "(public|protected|private|static|\s) +[\w\<\>\[\]]+\s+(\w+) *\([^\)]*\) *(\{?|[^;])"
+        match_iter = re.finditer(pattern, content)
+        for m in match_iter:
+            matched_string = m.group(0).strip()
+            # Check that the parsed function/method name is not a 'new' statement
+            if 'new ' in matched_string:
+                continue
+            # Strip everything from matched string except function/method name
+            search_obj = re.search('\\b\w+(?=\()', matched_string)
+            if search_obj is None:
+                continue
+            matched_string = search_obj.group(0)
+            # m.start() is the end of method signature.
+            # Find the end position of the entire function/method
+            end_pos = self.find_block_end(content, m.start())
+            matches.append((matched_string, m.start(), end_pos))
+        return matches
+
+    def find_block_end(self, content, start_pos):
         """
-        TODO: Parse class names from a java file
+        Finds the end position of a method/function in a text, given the start position.
+
+        :type content: string
+        :type start_pos: integer representing the start position of a method/function in content
+        :return integer: end position of the method/function
         """
-        pass
-    
+        # TODO:
+        end_pos = -1
+        return end_pos
+
+    def parse_class_names(self, content):
+        """
+        Find all class names and positions in a given text
+
+        :type content: string
+        :return list of tuple: [(class name, start pos, end pos)]
+        """
+        classes = []
+        match = re.finditer(r"(?:(?:(public|private|protected|static|final|abstract)\s+)*)" +
+                              "(?:class\s+)(\w+)\s*((extends\s+\w+\s*)|(implements\s+(\s*\w+\s*,)*\s*\w+\s*))*(?={)", content)
+        for m in match:
+            classes.append((m.group(2),m.start(),m.end()))
+        return classes
+
     def tokens_generator(self):
         """
         TODO: Generate tokens to index for a file, return JSON object that can be used by indexer.
@@ -47,4 +94,4 @@ class Analyzer():
 
 
 if __name__ == '__main__':
-    test()
+    test2()
