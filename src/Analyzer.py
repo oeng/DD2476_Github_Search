@@ -3,6 +3,14 @@ import os
 import re
 
 
+def test():
+    for filename, filepath, content in Analyzer().get_files_generator('download_repo/airbnb-lottie-android-c4502c1'):
+        print(filename)
+
+def test2():
+    for filename, filepath, content in Analyzer().get_files_generator('download_repo/airbnb-lottie-android-c4502c1'):
+        Analyzer().parse_class_names(filename, filepath, content)
+
 
 class Analyzer():
     # Constructor
@@ -24,11 +32,30 @@ class Analyzer():
                 content = f.read()
             yield filename, filepath, content
 
-    def parse_function_names(self):
-        """
-        TODO: Parse function and method names from a java file
-        """
-        pass
+    def parse_function_names(self, content):
+        matches = []
+        # Pattern for finding the start of Java functions/methods
+        pattern = "(public|protected|private|static|\s) +[\w\<\>\[\]]+\s+(\w+) *\([^\)]*\) *(\{?|[^;])"
+        match_iter = re.finditer(pattern, content)
+        for m in match_iter:
+            matched_string = m.group(0).strip()
+            # Check that the parsed function/method name is not a 'new' statement
+            if 'new ' in matched_string:
+                continue
+            # Strip everything from matched string except function/method name
+            search_obj = re.search('\\b\w+(?=\()', matched_string)
+            if search_obj is None:
+                continue
+            matched_string = search_obj.group(0)
+            # m.start() is the end of method signature.
+            # Find the end position of the entire function/method
+            end_pos = self.find_block_end(content, m.start())
+            matches.append((matched_string, m.start(), end_pos))
+        return matches
+
+    def find_block_end(self, content, start_pos):
+        end_pos = -1
+        return end_pos
 
     def parse_class_names(self, filename, filepath, content):
         """
@@ -47,13 +74,6 @@ class Analyzer():
         """
         pass
 
-def test():
-    for filename, filepath, content in Analyzer().get_files_generator('download_repo/airbnb-lottie-android-c4502c1'):
-        print(filename)
-
-def test2():
-    for filename, filepath, content in Analyzer().get_files_generator('download_repo/airbnb-lottie-android-c4502c1'):
-        Analyzer().parse_class_names(filename, filepath, content)
 
 if __name__ == '__main__':
     test2()
