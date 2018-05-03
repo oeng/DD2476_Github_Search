@@ -2,6 +2,8 @@ import glob
 import os
 import re
 
+import sys
+import io
 
 def test():
     for filename, filepath, content in Analyzer().get_files_generator('download_repo/airbnb-lottie-android-c4502c1'):
@@ -72,7 +74,7 @@ class Analyzer():
         end_pos = -1
         return end_pos
 
-    def parse_class_names(self, content):
+    def parse_class_names(self, filename, filepath, content):
         """
         Find all class names and positions in a given text
 
@@ -83,8 +85,89 @@ class Analyzer():
         match = re.finditer(r"(?:(?:(public|private|protected|static|final|abstract)\s+)*)" +
                               "(?:class\s+)(\w+)\s*((extends\s+\w+\s*)|(implements\s+(\s*\w+\s*,)*\s*\w+\s*))*(?={)", content)
         for m in match:
-            classes.append((m.group(2),m.start(),m.end()))
+            if(Analyzer().check_brace_balance(filename, filepath, content)):
+                classes.append((m.group(2),m.start(),m.end()))
         return classes
+
+    def check_brace_balance(self, filename, filepath, content, ):
+        """
+        Checks content for balanced braces while keeping content untouched.
+        Reads per line for storage of row in index.
+        Handles (), {} and /* */.
+
+        :type content: string
+        :return bool: True if braces are balanced TODO:
+        """
+
+        stack = []
+        row = 0
+        ignore_braces = False;
+        it = iter(io.StringIO(content).readlines())
+
+        while True:
+            try:
+                row += 1
+                line = next(it)
+                char_it = iter(line)
+                while True:
+                    try:
+                        c = next(char_it)
+
+                        # Ignore while inside multirow comment
+                        if re.match(r'\/',c):
+                            c = next(char_it)
+                            # multirow comment
+                            if re.match(r'\*',c):
+                                ignore_braces = True
+                            if re.match(r'\/',c):
+                                break
+
+                        # Start reading in braces when outside of comment again
+                        if re.match(r'\*',c):
+                            c = next(char_it)
+                            if re.match(r'\/',c):
+                                ignore_braces = False;
+
+
+                        if not ignore_braces:
+                            try:
+                                # Matching on left-side brace. Add to stack
+                                if re.match(r'\(|{',c):
+                                    stack.append(c)
+                                # Matching of right-side ). Pop stack
+                                if re.match(r'\)',c):
+                                    if stack[-1] == '(':
+                                        stack.pop()
+                                    else:
+                                        print("\nBad format: " + filepath + filename)
+                                        print("Line %s: found (), whould have been {}" % row)
+                                        return False
+                                # Matching of right-side }. Pop stack
+                                if re.match(r'}',c):
+                                    if stack[-1] == '{':
+                                        stack.pop()
+                                    else:
+                                        print("\nBad format: " + filepath + filename)
+                                        print("Line %s: found (), whould have been {}" % row)
+                                        return False
+                            except IndexError:
+                                print("\nBad format: " + filepath + filename)
+                                print("Line %s: pop on empty stack. Uneven braces." % row)
+                                return False
+                    except StopIteration:
+                        break;
+
+            except StopIteration:
+                break
+
+        # Make sure stack is empty
+        if not stack:
+            print("File ok.")
+            return True;
+        else:
+            print("\nBad format: " + filepath + filename)
+            print("Line %s: [EOF]" % row)
+            return False;
 
     def tokens_generator(self):
         """
