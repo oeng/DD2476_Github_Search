@@ -37,10 +37,11 @@ class Analyzer():
         Find all method/function names and positions in a given text
 
         :type content: string
-        :return list of tuple: [(method/function name, start_pos, end_pos)]
+        :return list of tuple: [(method/function name, start pos, end pos)]
         """
         matches = []
         # Pattern for finding the start of Java functions/methods
+        # TODO: Ange källa för regexet i pattern (stackoverflow), eller skriva egen version senare
         pattern = "(public|protected|private|static|\s) +[\w\<\>\[\]]+\s+(\w+) *\([^\)]*\) *(\{?|[^;])"
         match_iter = re.finditer(pattern, content)
         for m in match_iter:
@@ -71,9 +72,12 @@ class Analyzer():
         end_pos = -1
         return end_pos
 
-    def parse_class_names(self, filename, filepath, content):
+    def parse_class_names(self, content):
         """
-        TODO: Parse class names from a java file
+        Find all class names and positions in a given text
+
+        :type content: string
+        :return list of tuple: [(class name, start pos, end pos)]
         """
         classes = []
         match = re.finditer(r"(?:(?:(public|private|protected|static|final|abstract)\s+)*)" +
