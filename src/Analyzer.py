@@ -14,7 +14,6 @@ def test2():
         classes = Analyzer().parse_class_names(filename, filepath, content)
         print(classes)
 
-
 class Analyzer():
     # Constructor
     def __init__(self):
@@ -83,18 +82,20 @@ class Analyzer():
         :return list of tuple: [(class name, start pos, end pos)]
         """
         classes = []
-        match = re.finditer(r"(?:(?:(public|private|protected|static|final|abstract)\s+)*)" +
-                              "(?:class\s+)(\w+)\s*((extends\s+\w+\s*)|(implements\s+(\s*\w+\s*,)*\s*\w+\s*))*(?={)", content)
-        for m in match:
-            try:
-                ok, end_row = Analyzer().check_brace_balance(filename, filepath, content)
-            except IndexError:
-                print("parse_class_names: IndexError in {f}".format(f=filename))
-                continue
-            if ok:
+        match = re.finditer(r"(?:(?:(public|private|protected|static|final|abstract)\s+)*)(?:(class|interface|enum)\s+)(\w+)(((\s+)?<\s*\w+(\.\w+)*(\s*,\s*\w+(\.\w+)*\s*)*>)?)\s*((extends\s+\w+(\.\w+)*((\s+)?<.*>)?\s*)|(implements\s+(\s*(\w+(\.\w+)*((\s+)?<.*>)?)\s*,)*\s*(\w+(\.\w+)*((\s+)?<.*>)?)\s*))*(?={)", content)
+
+        valid_format, end_row = Analyzer().check_brace_balance(filename, filepath, content);
+
+        if valid_format:
+            for m in match:
                 classes.append((m.group(2), m.start(), end_row))
-            else:
-                print(":parse_class_names: found misaligned parantheses, skipping file")
+        else:
+            print(":parse_class_names: found misaligned parantheses, skipping file")
+
+        if end_row > -1 and not classes:
+            print(filepath + filename)
+
+
         return classes
 
     def check_brace_balance(self, filename, filepath, content ):
