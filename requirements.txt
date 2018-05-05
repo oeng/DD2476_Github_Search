@@ -1,7 +1,10 @@
 certifi==2018.4.16
 chardet==3.0.4
+elasticsearch==6.2.0
 gitdb2==2.0.3
 idna==2.6
+javalang==0.11.0
 requests==2.18.4
+six==1.11.0
 smmap2==2.0.3
 urllib3==1.22
