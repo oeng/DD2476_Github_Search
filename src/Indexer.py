@@ -106,21 +106,6 @@ class Indexer:
             )
             self.bulk_cache = []
 
-    def search_test(self):
-        """
-        Does not work
-        # TODO
-        :return:
-        """
-        res = self.es.search(index="test", body={
-            "query": {
-                "match_all": {
-                    'functions.name': 'testH2CServerFallback'
-                }
-            }
-        })
-        print(res)
-
     def run(self):
         """
         Run the indexer
