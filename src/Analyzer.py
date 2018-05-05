@@ -11,10 +11,12 @@ def test():
 
 def test2():
     for filename, filepath, content in Analyzer().get_files_generator('download_repo/'):
-        classes = Analyzer().parse_class_names(filename, filepath, content)
-        print(classes)
-        function_names = Analyzer().parse_function_names(content)
-        print(function_names)
+        # classes = Analyzer().parse_class_names(filename, filepath, content)
+        # print(classes)
+        # function_names = Analyzer().parse_function_names(content)
+        # print(function_names)
+        package_name = Analyzer().parse_package_name(content)
+        print(package_name)
 
 class Analyzer():
     # Constructor
@@ -35,6 +37,21 @@ class Analyzer():
             with open(filepath, 'r') as f:
                 content = f.read()
             yield filename, filepath, content
+
+    def parse_package_name(self, content):
+        """
+        Parse file package
+        :param content: Java file content
+        :return: package name 'cyberdyne.skynet.vision' or None
+        """
+
+        pattern = re.compile("^package (?:\w+|\w+\.\w+)+;$")
+        for line in content.split('\n'):
+            if pattern.match(line):
+                # We found a package declaration, strip away "package " in the beginning and ; at the end
+                package_name = line[len('package '):-1]
+                # Break, maximum of one package per file
+                return package_name
 
     def parse_function_names(self, content):
         """
