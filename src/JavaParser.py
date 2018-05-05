@@ -5,7 +5,6 @@ import javalang
 from javalang import tree
 
 
-
 class JavaParser:
     def __init__(self, content):
         """
