@@ -13,6 +13,28 @@ class Indexer:
         self.index_to_use = 'test'
         self.bulk_cache = []
 
+        # https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-pattern-analyzer.html
+        # Note: these settings are only taken into account for NEW indices
+        self.settings = {
+            'settings': {
+                'analysis': {
+                    'analyzer': {
+                        'camel': {
+                            'type': 'pattern',
+                            'pattern': '([^\\p{L}\\d]+)|(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)|(?<=[\\p{L}&&[^\\p{Lu}]])(?=\\p{Lu})|(?<=\\p{Lu})(?=\\p{Lu}[\\p{L}&&[^\\p{Lu}]])'
+                        }
+                    }
+                }
+            }
+        }
+
+        # Init index
+        # self.es.indices.create(
+        #     index=self.index_to_use,
+        #     body=self.settings,
+        #     ignore=400  # Index already exists if HTTP 400, skip exception
+        # )
+
     def index_document(self, d):
         """
         Index a single document into elasticsearch
@@ -83,8 +105,10 @@ class Indexer:
         """
         analyzer = Analyzer()
         for d in analyzer.get_analyzed_file():
-            self.index_document_bulk(d)
-            self.index_cache()
+            self.index_document(d)
+            # self.index_document_bulk(d)
+        # Run this after the for loop if using bulk
+        # self.index_cache()
 
 
 if __name__ == '__main__':

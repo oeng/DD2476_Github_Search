@@ -49,6 +49,10 @@ class Analyzer:
             except javalang.parser.JavaSyntaxError:
                 print('Warning skipping file: ', filepath, file=sys.stderr)
                 continue
+
+            # Create data strucure for elastic search here directly
+            # Nested representation is handled automatically by elastic search
+            # https://www.elastic.co/guide/en/elasticsearch/reference/current/nested.html
             d = {
                 'filename': filename,
                 'filepath': filepath,
