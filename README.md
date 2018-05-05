@@ -13,3 +13,11 @@ pip install -r requirements.txt
 - [ ] Index it into elasticsearch (https://github.com/elastic/elasticsearch), or another search engine of your choice.
 - [ ] Create an interface where you can search and filter methods or classes based on the metadata you have created.
 - [ ] A sample query could be methodName:quicksort AND returnType:List<Number> i i.e. search for quicksort, and filter by methods with returnType List. What would you want to search for?
+
+
+## Additional criteria, 2 needed for C, 3 needed for B etc
+
+- [ ] The solution to the problem is novel in some respect (i.e., it has not been published before in a book, report, article or paper). A novel combination of known techniques is fine.
+- [ ] The results are evaluated, preferably on realistic data, preferably using methods from the literature.
+- [ ] The poster presentation is clear and understandable to another student who has not read the report or references in it.
+- [ ] The report is clear, complete, technically correct, and written in grammatically correct English.

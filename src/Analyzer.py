@@ -13,10 +13,16 @@ def test2():
     for filename, filepath, content in Analyzer().get_files_generator('download_repo/'):
         # classes = Analyzer().parse_class_names(filename, filepath, content)
         # print(classes)
-        # function_names = Analyzer().parse_function_names(content)
-        # print(function_names)
-        package_name = Analyzer().parse_package_name(content)
-        print(package_name)
+        function_names = Analyzer().parse_function_names(content)
+        print(function_names)
+        # package_name = Analyzer().parse_package_name(content)
+        # print(package_name)
+
+def test3():
+    for filename, filepath, content in Analyzer().get_files_generator('res/tests/'):
+        content = Analyzer().remove_comments(content)
+        function_names = Analyzer().parse_function_names(content)
+        print(function_names)
 
 class Analyzer():
     # Constructor
@@ -53,6 +59,19 @@ class Analyzer():
                 # Break, maximum of one package per file
                 return package_name
 
+    def remove_comments(self, content):
+        """
+        Replace comments with with spaces
+
+        :param content: Java file content
+        :return: content without comments
+        """
+
+        # Regex source: https://stackoverflow.com/a/2319146
+        pattern = re.compile('(\/\*([^*]|[\r\n]|(\*+([^*\/]|[\r\n])))*\*+\/)|(\/\/.*)')
+        content = re.sub(pattern, ' ', content)
+        return content
+
     def parse_function_names(self, content):
         """
         Find all method/function names and positions in a given text
@@ -60,13 +79,12 @@ class Analyzer():
         :type content: string
         :return list of tuple: [(function name, row)]
         """
+        content = self.remove_comments(content)
         matches = []
         # Pattern for finding the start of Java functions/methods
         # TODO: Ange källa för regexet i pattern (stackoverflow), eller skriva egen version senare
         pattern = "(public|protected|private|static|\s) +[\w\<\>\[\]]+\s+(\w+) *\([^\)]*\) *(\{?|[^;])"
-        line_number = 0
-        for line in content.split('\n'):
-            line_number += 1
+        for line_number, line in enumerate(content.split('\n')):
             match_iter = re.finditer(pattern, line)
             for m in match_iter:
                 matched_string = m.group(0).strip()
@@ -82,7 +100,7 @@ class Analyzer():
                 # Find the end position of the entire function/method
                 # end_pos = self.find_block_end(content, m.start())
                 # matches.append((matched_string, m.start(), end_pos))
-                matches.append((matched_string, line_number))
+                matches.append((matched_string, line_number+1))
         return matches
 
     def find_block_end(self, content, start_pos):
@@ -217,4 +235,4 @@ class Analyzer():
 
 
 if __name__ == '__main__':
-    test2()
+    test3()
