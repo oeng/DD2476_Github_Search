@@ -13,6 +13,8 @@ def test2():
     for filename, filepath, content in Analyzer().get_files_generator('download_repo/'):
         classes = Analyzer().parse_class_names(filename, filepath, content)
         print(classes)
+        function_names = Analyzer().parse_function_names(content)
+        print(function_names)
 
 class Analyzer():
     # Constructor
@@ -39,27 +41,31 @@ class Analyzer():
         Find all method/function names and positions in a given text
 
         :type content: string
-        :return list of tuple: [(method/function name, start pos, end pos)]
+        :return list of tuple: [(function name, row)]
         """
         matches = []
         # Pattern for finding the start of Java functions/methods
         # TODO: Ange källa för regexet i pattern (stackoverflow), eller skriva egen version senare
         pattern = "(public|protected|private|static|\s) +[\w\<\>\[\]]+\s+(\w+) *\([^\)]*\) *(\{?|[^;])"
-        match_iter = re.finditer(pattern, content)
-        for m in match_iter:
-            matched_string = m.group(0).strip()
-            # Check that the parsed function/method name is not a 'new' statement
-            if 'new ' in matched_string:
-                continue
-            # Strip everything from matched string except function/method name
-            search_obj = re.search('\\b\w+(?=\()', matched_string)
-            if search_obj is None:
-                continue
-            matched_string = search_obj.group(0)
-            # m.start() is the end of method signature.
-            # Find the end position of the entire function/method
-            end_pos = self.find_block_end(content, m.start())
-            matches.append((matched_string, m.start(), end_pos))
+        line_number = 0
+        for line in content.split('\n'):
+            line_number += 1
+            match_iter = re.finditer(pattern, line)
+            for m in match_iter:
+                matched_string = m.group(0).strip()
+                # Check that the parsed function/method name is not a 'new' statement
+                if 'new ' in matched_string:
+                    continue
+                # Strip everything from matched string except function/method name
+                search_obj = re.search('\\b\w+(?=\()', matched_string)
+                if search_obj is None:
+                    continue
+                matched_string = search_obj.group(0)
+                # m.start() is the end of method signature.
+                # Find the end position of the entire function/method
+                # end_pos = self.find_block_end(content, m.start())
+                # matches.append((matched_string, m.start(), end_pos))
+                matches.append((matched_string, line_number))
         return matches
 
     def find_block_end(self, content, start_pos):
