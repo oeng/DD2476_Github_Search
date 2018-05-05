@@ -14,6 +14,7 @@ class Indexer:
         self.bulk_cache = []
 
         # https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-pattern-analyzer.html
+        # https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping.html
         # Note: these settings are only taken into account for NEW indices
         self.settings = {
             'settings': {
@@ -25,15 +26,38 @@ class Indexer:
                         }
                     }
                 }
+            },
+            'mappings': {
+                'java': {
+                    'properties': {
+                        'filename': {'type': 'text', 'analyzer': 'camel'},
+                        'filepath': {'type': 'keyword'},
+                        'package': {'type': 'text'},
+                        'functions': {
+                            'type': 'nested',
+                            'properties': {
+                                'name': {'type': 'text', 'analyzer': 'camel'},
+                                'row': {'type': 'integer'}
+                            },
+                        },
+                        'classes': {
+                            'type': 'nested',
+                            'properties': {
+                                'name': {'type': 'text', 'analyzer': 'camel'},
+                                'row': {'type': 'integer'}
+                            },
+                        }
+                    }
+                }
             }
         }
 
         # Init index
-        # self.es.indices.create(
-        #     index=self.index_to_use,
-        #     body=self.settings,
-        #     ignore=400  # Index already exists if HTTP 400, skip exception
-        # )
+        self.es.indices.create(
+            index=self.index_to_use,
+            body=self.settings,
+            ignore=400  # Index already exists if HTTP 400, skip exception
+        )
 
     def index_document(self, d):
         """
