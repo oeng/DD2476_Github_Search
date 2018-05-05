@@ -38,7 +38,10 @@ class JavaParser:
         """
         :return: File package name
         """
-        return self.tree.package.name
+        if hasattr(self.tree.package, 'name'):
+            return self.tree.package.name
+        else:
+            return None
 
     def get_functions(self):
         """

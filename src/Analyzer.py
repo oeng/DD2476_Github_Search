@@ -5,6 +5,8 @@ import re
 import sys
 import io
 
+import javalang
+
 from src.JavaParser import JavaParser
 
 
@@ -42,7 +44,11 @@ class Analyzer:
         :return: dict containing: filename, filepath, package, functions, classes
         """
         for filename, filepath, content in self.get_files_generator():
-            parser = JavaParser(content)
+            try:
+                parser = JavaParser(content)
+            except javalang.parser.JavaSyntaxError:
+                print('Warning skipping file: ', filepath, file=sys.stderr)
+                continue
             d = {
                 'filename': filename,
                 'filepath': filepath,
