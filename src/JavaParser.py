@@ -19,8 +19,6 @@ class JavaParser:
         """
         self.tree = javalang.parse.parse(content)
 
-        Function = namedtuple('Function', 'name row')
-        Class = namedtuple('Class', 'name row')
         self.functions = []
         self.classes = []
         # print(tree.package.name)
@@ -28,12 +26,12 @@ class JavaParser:
             if isinstance(node, tree.ClassDeclaration):
                 # attrs = ("type_parameters", "extends", "implements")
                 row = node.position[0]
-                f = Class(node.name, row)
+                f = {'name': node.name, 'row': row}
                 self.classes.append(f)
             elif isinstance(node, tree.MethodDeclaration):
                 # attrs = ("type_parameters", "return_type", "name", "parameters", "throws", "body")
                 row = node.position[0]
-                f = Function(node.name, row)
+                f = {'name': node.name, 'row': row}
                 self.functions.append(f)
 
     def get_package_name(self):
@@ -45,14 +43,14 @@ class JavaParser:
     def get_functions(self):
         """
 
-        :return: list of named tuples
+        :return: list of dicts
         """
         return self.functions
 
     def get_classes(self):
         """
 
-        :return: list of named tuples
+        :return: list of dicts
         """
         return self.classes
 

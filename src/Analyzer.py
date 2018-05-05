@@ -5,9 +5,13 @@ import re
 import sys
 import io
 
+from src.JavaParser import JavaParser
+
+
 def test():
     for filename, filepath, content in Analyzer().get_files_generator('download_repo/airbnb-lottie-android-c4502c1'):
         print(filename)
+
 
 def test2():
     for filename, filepath, content in Analyzer().get_files_generator('download_repo/'):
@@ -18,18 +22,37 @@ def test2():
         # package_name = Analyzer().parse_package_name(content)
         # print(package_name)
 
+
 def test3():
     for filename, filepath, content in Analyzer().get_files_generator('res/tests/'):
         content = Analyzer().remove_comments(content)
         function_names = Analyzer().parse_function_names(content)
         print(function_names)
 
-class Analyzer():
+
+class Analyzer:
     # Constructor
     def __init__(self):
-        pass
+        self.repo_path = 'download_repo'
 
-    def get_files_generator(self, repo_path):
+    def get_analyzed_file(self):
+        """
+        Yield an analyzed file
+
+        :return: dict containing: filename, filepath, package, functions, classes
+        """
+        for filename, filepath, content in self.get_files_generator():
+            parser = JavaParser(content)
+            d = {
+                'filename': filename,
+                'filepath': filepath,
+                'package': parser.get_package_name(),
+                'functions': parser.get_functions(),
+                'classes': parser.get_classes(),
+            }
+            yield d
+
+    def get_files_generator(self):
         """
         Yield source code files one at a time
 
@@ -38,7 +61,7 @@ class Analyzer():
         """
         # Loop through all Java files in a repo
         s = os.path.sep
-        for filepath in glob.iglob(repo_path + s + '**' + s + '*.java', recursive=True):
+        for filepath in glob.iglob(self.repo_path + s + '**' + s + '*.java', recursive=True):
             filename = os.path.basename(filepath)
             with open(filepath, 'r') as f:
                 content = f.read()
