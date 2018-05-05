@@ -1,4 +1,8 @@
-from elasticsearch import Elasticsearch
+import sys
+from collections import deque
+
+from elasticsearch import Elasticsearch, helpers
+
 from src.Analyzer import Analyzer
 
 
@@ -11,7 +15,6 @@ class Indexer:
         # https://elasticsearch-py.readthedocs.io/en/master/api.html
         self.es = Elasticsearch()
         self.index_to_use = 'test'
-        self.bulk_cache = []
 
         # https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-pattern-analyzer.html
         # https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping.html
@@ -62,6 +65,8 @@ class Indexer:
     def index_document(self, d):
         """
         Index a single document into elasticsearch
+
+        Not use anymore
         :param d: data structure
         """
 
@@ -71,41 +76,6 @@ class Indexer:
             body=d,
         )
 
-        # print(self.es.get(index='test', doc_type='java', id=1))
-
-    def index_document_bulk(self, d, interval=1000):
-        """
-        Perform bulk indexing
-
-        Call this function as index_document, it will perform bulk indexing at certain intervals
-
-        Note: this function will not index the last interval-1 documents.
-        Call index_cache after using this function in a for loop
-
-        :param interval: bulk index every [interval] method call
-        :param d: data structure, the same as index_document
-        """
-        if len(self.bulk_cache) >= interval:
-            # Index
-            self.index_cache()
-        else:
-            self.bulk_cache.append(d)
-
-    def index_cache(self):
-        """
-        Index all documents (if any) in the cache
-        """
-        if len(self.bulk_cache) > 0:
-            body = {
-                'index': self.bulk_cache
-            }
-            self.es.index(
-                index=self.index_to_use,
-                doc_type='java',
-                body=body,
-            )
-            self.bulk_cache = []
-
     def run(self):
         """
         Run the indexer
@@ -113,11 +83,17 @@ class Indexer:
         Retrieves files from the analyzer and indexes them into elasticsearch
         """
         analyzer = Analyzer()
-        for d in analyzer.get_analyzed_file():
-            self.index_document(d)
-            # self.index_document_bulk(d)
-        # Run this after the for loop if using bulk
-        # self.index_cache()
+        # https://elasticsearch-py.readthedocs.io/en/master/helpers.html?highlight=bulk
+        deque(helpers.parallel_bulk(
+            self.es,
+            analyzer.get_analyzed_file(),
+            thread_count=4,
+            index=self.index_to_use,
+            doc_type='java',
+            chunk_size=500
+        ))
+        # for d in analyzer.get_analyzed_file():
+            # self.index_document(d)
 
 
 if __name__ == '__main__':
