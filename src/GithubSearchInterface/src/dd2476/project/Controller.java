@@ -13,10 +13,16 @@ import java.net.URLConnection;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
+import org.fxmisc.richtext.InlineCssTextArea;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import org.fxmisc.richtext.CodeArea;
 
 public class Controller {
     private final static String INDEX_NAME = "test";
@@ -53,8 +59,7 @@ public class Controller {
     }
 
     private void openResultEntry(PostingsEntry entry) {
-        // TextArea for displaying file contents of clicked result posting
-        TextArea codeArea = new TextArea();
+        InlineCssTextArea codeArea = new InlineCssTextArea();
         // Settings for the new window that we will open
         StackPane detailsLayout = new StackPane();
         detailsLayout.getChildren().add(codeArea);
@@ -63,20 +68,30 @@ public class Controller {
         detailsWindow.setScene(detailsScene);
         detailsWindow.setTitle("Showing result found in: " + entry.getRepo());
 
+        // TODO: Använd radnummer istället för absolutpositioner
         String newLineSymbol = System.getProperty("line.separator");
+        int lineNumber= 0;
+        int startPos = 0;
+        int endPos = 0;
         try (BufferedReader br = new BufferedReader(new FileReader(entry.getFilepath()))) {
             String line;
-            // TODO: RichTextFX instead of TextArea?
             while ((line = br.readLine()) != null) {
-                codeArea.appendText(line +  newLineSymbol);
+                //if (lineNumber == entry.startPos - 1) {
+                //    /**
+                //     * Increment the startPos as long as we have not reached the
+                //     * method/functions/class start line.
+                //     */
+                //    startPos += line.getBytes().length;
+                //}
+                //if (lineNumber < entry.startPos) {
+                //    endPos += line.getBytes().length;
+                //}
+                codeArea.appendText(line + newLineSymbol);
+                ++lineNumber;
             }
-            // Pre-select the text range we are interested in
-            codeArea.selectRange(entry.startPos, entry.endPos);
-            // Copy selected text to clipboard
-            Clipboard sysClipboard = Clipboard.getSystemClipboard();
-            ClipboardContent content = new ClipboardContent();
-            content.putString(codeArea.getSelectedText());
-            sysClipboard.setContent(content);
+            codeArea.setStyle(entry.startPos - 1, "-fx-fill:red;");
+            codeArea.moveTo(entry.startPos - 1, 0);
+            codeArea.scrollToPixel(entry.startPos, 0);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
