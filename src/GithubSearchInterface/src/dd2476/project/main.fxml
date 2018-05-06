@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.RadioMenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dd2476.project.Controller">
+  <children>
+    <MenuBar VBox.vgrow="NEVER">
+      <menus>
+        <Menu mnemonicParsing="false" text="File">
+          <items>
+            <MenuItem mnemonicParsing="false" text="New" />
+            <MenuItem mnemonicParsing="false" text="Open…" />
+            <Menu mnemonicParsing="false" text="Open Recent" />
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem mnemonicParsing="false" text="Close" />
+            <MenuItem mnemonicParsing="false" text="Save" />
+            <MenuItem mnemonicParsing="false" text="Save As…" />
+            <MenuItem mnemonicParsing="false" text="Revert" />
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem mnemonicParsing="false" text="Preferences…" />
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem mnemonicParsing="false" text="Quit" />
+          </items>
+        </Menu>
+        <Menu mnemonicParsing="false" text="Search settings">
+               <items>
+                  <RadioMenuItem id="funcSearchRadio" fx:id="functionSearchRadio" mnemonicParsing="false" selected="true" text="Function search">
+                     <toggleGroup>
+                        <ToggleGroup fx:id="toggleGroup" />
+                     </toggleGroup>
+                  </RadioMenuItem>
+                  <RadioMenuItem id="classSearchRadio" fx:id="classSearchRadio" mnemonicParsing="false" text="Class search" toggleGroup="$toggleGroup" />
+               </items>
+        </Menu>
+        <Menu mnemonicParsing="false" text="Help">
+          <items>
+            <MenuItem mnemonicParsing="false" text="About MyHelloApp" />
+          </items>
+        </Menu>
+      </menus>
+    </MenuBar>
+    <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" style="-fx-background-color: #24292E;" VBox.vgrow="ALWAYS">
+      <children>
+            <TextField id="queryField" fx:id="queryField" layoutX="53.0" layoutY="53.0" onAction="#onEnter" prefHeight="37.0" prefWidth="535.0" promptText="Enter function or class name" style="-fx-background-color: #3F4448;" AnchorPane.leftAnchor="53.0" AnchorPane.rightAnchor="52.0" AnchorPane.topAnchor="53.0" />
+            <Label layoutX="52.0" layoutY="14.0" text="Search for code snippets" textFill="#8d9092">
+               <font>
+                  <Font size="19.0" />
+               </font>
+            </Label>
+            <ListView id="resultsListView" fx:id="resultsListView" layoutX="53.0" layoutY="133.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="206.0" prefWidth="535.0" style="-fx-background-radius: 4px; -fx-background-color: #3F4448;" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="53.0" AnchorPane.rightAnchor="52.0" AnchorPane.topAnchor="133.0" />
+            <Label fx:id="infoLabel" layoutX="53.0" layoutY="102.0" textFill="WHITE" />
+      </children>
+    </AnchorPane>
+  </children>
+</VBox>
