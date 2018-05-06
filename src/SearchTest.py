@@ -11,7 +11,7 @@ def search_test():
         body={
             'query': {
                 'match': {
-                    'package': 'internal'
+                    'functions.name': 'tearDown'
                 }
             }
         })

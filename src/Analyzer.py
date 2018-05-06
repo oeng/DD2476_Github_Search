@@ -26,7 +26,7 @@ def test2():
 
 
 def test3():
-    for filename, filepath, content in Analyzer().get_files_generator('res/tests/'):
+    for filename, filepath, content in Analyzer().get_files_generator():
         content = Analyzer().remove_comments(content)
         function_names = Analyzer().parse_function_names(content)
         print(function_names)
@@ -46,7 +46,8 @@ class Analyzer:
         for filename, filepath, content in self.get_files_generator():
             try:
                 parser = JavaParser(content)
-            except javalang.parser.JavaSyntaxError:
+                # print('Analyzed file: ', filepath)
+            except Exception as e:
                 print('Warning skipping file: ', filepath, file=sys.stderr)
                 continue
 
@@ -73,8 +74,12 @@ class Analyzer:
         s = os.path.sep
         for filepath in glob.iglob(self.repo_path + s + '**' + s + '*.java', recursive=True):
             filename = os.path.basename(filepath)
-            with open(filepath, 'r') as f:
-                content = f.read()
+            try:
+                with open(filepath, 'r') as f:
+                        content = f.read()
+            except Exception as e:
+                # If the crawling was aborted, it is possible that files are corrupt
+                content = ''
             yield filename, filepath, content
 
     def parse_package_name(self, content):

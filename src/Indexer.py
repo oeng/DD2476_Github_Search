@@ -33,6 +33,7 @@ class Indexer:
             'mappings': {
                 'java': {
                     'properties': {
+                        'type': 'nested',
                         'filename': {'type': 'text', 'analyzer': 'camel'},
                         'filepath': {'type': 'keyword'},
                         'package': {'type': 'text', 'analyzer': 'simple'},
@@ -62,6 +63,9 @@ class Indexer:
             ignore=400  # Index already exists if HTTP 400, skip exception
         )
 
+        # To delete existing index:
+        # curl -X DELETE  'http://localhost:9200/test'
+
     def index_document(self, d):
         """
         Index a single document into elasticsearch
@@ -90,7 +94,7 @@ class Indexer:
             thread_count=4,
             index=self.index_to_use,
             doc_type='java',
-            chunk_size=500
+            chunk_size=50
         ))
         # for d in analyzer.get_analyzed_file():
             # self.index_document(d)
