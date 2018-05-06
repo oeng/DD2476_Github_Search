@@ -1,19 +1,22 @@
 package dd2476.project;
 
 import javafx.event.ActionEvent;
+import javafx.event.EventType;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.sql.SQLOutput;
-import java.util.ArrayList;
-import java.util.List;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
 
+import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,14 +43,49 @@ public class Controller {
     @FXML
     public void initialize() {
         infoLabel.setText("Press enter to search");
+        System.err.println(System.getProperty("user.dir"));
+        resultsListView.setOnMouseClicked((event) -> {
+            // A search result was clicked, find out which one
+            PostingsEntry clickedEntry = resultsListView.getSelectionModel().getSelectedItem();
+            if (clickedEntry != null) {
+                // Show detailed information to user
+                openResultEntry(clickedEntry);
+            }
+        });
     }
 
     private void openResultEntry(PostingsEntry entry) {
-        // TODO: Display the method/function/class/file when user clicks an entry in the result list.
-        // Should it open in a new window?
-        // For method/function display only the method/function?
-        // For class, display entire class?
-        // For package, display entire file?
+        StackPane detailsLayout = new StackPane();
+        TextArea codeArea = new TextArea();
+        detailsLayout.getChildren().add(codeArea);
+        Scene detailsScene = new Scene(detailsLayout, 600, 800);
+        Stage detailsWindow = new Stage();
+        detailsWindow.setScene(detailsScene);
+        detailsWindow.setTitle("Showing result found in: " + entry.getRepo());
+
+        int lineCount = 0;
+        int caretPos = 0;
+        String newLineSymbol = System.getProperty("line.separator");
+        try (BufferedReader br = new BufferedReader(new FileReader(entry.getFilepath()))) {
+            String line;
+            // TODO: RichTextFX
+            while ((line = br.readLine()) != null) {
+                //if (lineCount == entry.startPos) {
+                //    caretPos = codeArea.getCaretPosition();
+                //}
+                codeArea.appendText(line +  newLineSymbol);
+                //++lineCount;
+            }
+            //codeArea.positionCaret(caretPos);
+            //codeArea.selectPositionCaret(entry.endPos);
+            codeArea.selectRange(entry.startPos, entry.endPos);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        detailsWindow.show();
     }
 
     private void updateListView(PostingsList plist) {
@@ -99,7 +137,7 @@ public class Controller {
                             foundEntry.filepath = filepath;
                             foundEntry.pkg = pkg;
                             foundEntry.name = function.getString("name");
-                            foundEntry.startRow = function.getInt("row");
+                            foundEntry.startPos = function.getInt("row");
                             searchResults.addPostingsEntry(foundEntry);
                         }
 
@@ -111,7 +149,7 @@ public class Controller {
                             foundEntry.filepath = filepath;
                             foundEntry.pkg = pkg;
                             foundEntry.name = klass.getString("name");
-                            foundEntry.startRow = klass.getInt("row");
+                            foundEntry.startPos = klass.getInt("row");
                             searchResults.addPostingsEntry(foundEntry);
                         }
 
@@ -122,7 +160,7 @@ public class Controller {
                             foundEntry.filepath = filepath;
                             foundEntry.pkg = pkg;
                             foundEntry.name = pkg;
-                            foundEntry.startRow = 0;
+                            foundEntry.startPos = 0;
                             searchResults.addPostingsEntry(foundEntry);
 
                         } else {
