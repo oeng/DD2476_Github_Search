@@ -5,6 +5,10 @@ Python 3 is used.
 Install python dependencies:
 pip install -r requirements.txt
 
+To run:
+python3 -m src.Crawler
+python3 -m src.Indexer
+
 ## Project Specification
 
 - [x] Crawl (a part of) the publicly available GitHub code.

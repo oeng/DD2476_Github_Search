@@ -13,7 +13,7 @@ class JavaParser:
         For tree-documentation:
         https://github.com/c2nes/javalang/blob/master/javalang/tree.py
 
-        Throws javalang.parser.JavaSyntaxError if the file could not be parsed
+        Throws javalang.parser.JavaSyntaxError or LexerError if the file could not be parsed
 
         :param content: Java file content
         """
