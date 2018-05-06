@@ -35,7 +35,7 @@ class Indexer:
                     'properties': {
                         'filename': {'type': 'text', 'analyzer': 'camel'},
                         'filepath': {'type': 'keyword'},
-                        'package': {'type': 'text'},
+                        'package': {'type': 'text', 'analyzer': 'simple'},
                         'functions': {
                             'type': 'nested',
                             'properties': {

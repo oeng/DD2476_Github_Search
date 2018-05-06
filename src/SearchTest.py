@@ -11,7 +11,7 @@ def search_test():
         body={
             'query': {
                 'match': {
-                    'package': 'okhttp3'
+                    'package': 'internal'
                 }
             }
         })
