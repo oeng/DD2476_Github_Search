@@ -2,9 +2,9 @@ package dd2476.project;
 
 public class Query {
     public String term;
-    public String type;
+    public QueryType type;
 
-    public Query(String term, String type) {
+    public Query(String term, QueryType type) {
         this.term = term;
         this.type = type;
     }

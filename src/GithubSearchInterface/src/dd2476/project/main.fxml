@@ -41,6 +41,7 @@
                      </toggleGroup>
                   </RadioMenuItem>
                   <RadioMenuItem id="classSearchRadio" fx:id="classSearchRadio" mnemonicParsing="false" text="Class search" toggleGroup="$toggleGroup" />
+                  <RadioMenuItem fx:id="packageSearchRadio" mnemonicParsing="false" text="Package search" toggleGroup="$toggleGroup" />
                </items>
         </Menu>
         <Menu mnemonicParsing="false" text="Help">

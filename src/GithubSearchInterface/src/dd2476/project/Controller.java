@@ -34,18 +34,23 @@ public class Controller {
     RadioMenuItem functionSearchRadio;
     @FXML
     RadioMenuItem classSearchRadio;
+    @FXML
+    RadioMenuItem packageSearchRadio;
 
     @FXML
     public void initialize() {
         infoLabel.setText("Press enter to search");
     }
 
-    private void showItem(PostingsEntry entry) {
-        // TODO
+    private void openResultEntry(PostingsEntry entry) {
+        // TODO: Display the method/function/class/file when user clicks an entry in the result list.
+        // Should it open in a new window?
+        // For method/function display only the method/function?
+        // For class, display entire class?
+        // For package, display entire file?
     }
 
     private void updateListView(PostingsList plist) {
-        //resultsListView = new ListView<PostingsEntry>();
         resultsListView.getItems().clear();
         resultsListView.getItems().addAll(plist.postings);
     }
@@ -53,8 +58,12 @@ public class Controller {
     private PostingsList search(Query query) {
         PostingsList searchResults = new PostingsList(query.type);
         URL queryURL;
-        String key = "?q="+query.type+".name:"+query.term;
-        System.err.println("starting search for: " + query.term);
+        String key = "";
+        if (query.type == QueryType.FUNCTIONS || query.type == QueryType.CLASSES) {
+            key = "?q="+query.type.name().toLowerCase()+".name:"+query.term;
+        } else if (query.type == QueryType.PACKAGE) {
+            key = "?q="+query.type.name().toLowerCase()+":"+query.term;
+        }
         try {
             queryURL = new URL(ES_URL + INDEX_NAME + "/_search/" + key);
             URLConnection conn = queryURL.openConnection();
@@ -82,7 +91,7 @@ public class Controller {
                     JSONArray functions = _sourceObject.getJSONArray("functions");
                     JSONArray classes = _sourceObject.getJSONArray("classes");
 
-                    if (query.type.equals("functions")) {
+                    if (query.type == QueryType.FUNCTIONS) {
                         for (int j = 0; j < functions.length(); ++j) {
                             PostingsEntry foundEntry = new PostingsEntry();
                             JSONObject function = functions.getJSONObject(j);
@@ -93,7 +102,8 @@ public class Controller {
                             foundEntry.startRow = function.getInt("row");
                             searchResults.addPostingsEntry(foundEntry);
                         }
-                    } else if (query.type.equals("classes")) {
+
+                    } else if (query.type == QueryType.CLASSES) {
                         for (int j = 0; j < classes.length(); ++j) {
                             PostingsEntry foundEntry = new PostingsEntry();
                             JSONObject klass = functions.getJSONObject(j);
@@ -104,13 +114,24 @@ public class Controller {
                             foundEntry.startRow = klass.getInt("row");
                             searchResults.addPostingsEntry(foundEntry);
                         }
-                    } else {
+
+                    } else if (query.type == QueryType.PACKAGE) {
+                        // TODO: Implement package search
+                            PostingsEntry foundEntry = new PostingsEntry();
+                            foundEntry.filename = filename;
+                            foundEntry.filepath = filepath;
+                            foundEntry.pkg = pkg;
+                            foundEntry.name = pkg;
+                            foundEntry.startRow = 0;
+                            searchResults.addPostingsEntry(foundEntry);
+
+                        } else {
                         System.err.println("error: unknown query type");
                         return searchResults;
                     }
                 }
             } else {
-                System.err.println("Search returned 0 hits");
+                System.out.println("Search returned 0 hits");
             }
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -126,23 +147,27 @@ public class Controller {
     // ----- EVENT HANDLERS -----
 
     public void onEnter(ActionEvent e) {
-        System.err.println("test");
-        String queryFieldText = queryField.getText();
+        String queryFieldText = queryField.getText().trim();
         if (queryFieldText != null) {
             Query query;
             if (functionSearchRadio.isSelected()) {
-                query = new Query(queryFieldText, "functions");
+                query = new Query(queryFieldText, QueryType.FUNCTIONS);
                 PostingsList plist = search(query);
                 infoLabel.setText("Number of hits: " + plist.postings.size());
                 updateListView(plist);
             } else if (classSearchRadio.isSelected()) {
-                query = new Query(queryFieldText, "classes");
+                query = new Query(queryFieldText, QueryType.CLASSES);
+                PostingsList plist = search(query);
+                infoLabel.setText("Number of hits: " + plist.postings.size());
+                updateListView(plist);
+            } else if (packageSearchRadio.isSelected()) {
+                query = new Query(queryFieldText, QueryType.PACKAGE);
                 PostingsList plist = search(query);
                 infoLabel.setText("Number of hits: " + plist.postings.size());
                 updateListView(plist);
             }
         } else {
-            System.err.println("error: empty query received");
+            System.out.println("error: empty query received");
         }
     }
 }

@@ -4,9 +4,9 @@ import java.util.ArrayList;
 
 public class PostingsList {
     ArrayList<PostingsEntry> postings;
-    String queryType;
+    QueryType queryType;
 
-    public PostingsList(String queryType){
+    public PostingsList(QueryType queryType){
         this.queryType = queryType;
         postings = new ArrayList<>();
     }
