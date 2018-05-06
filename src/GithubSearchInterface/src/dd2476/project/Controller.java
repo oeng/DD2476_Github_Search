@@ -63,22 +63,16 @@ public class Controller {
         detailsWindow.setScene(detailsScene);
         detailsWindow.setTitle("Showing result found in: " + entry.getRepo());
 
-        int lineCount = 0;
-        int caretPos = 0;
         String newLineSymbol = System.getProperty("line.separator");
         try (BufferedReader br = new BufferedReader(new FileReader(entry.getFilepath()))) {
             String line;
             // TODO: RichTextFX
             while ((line = br.readLine()) != null) {
-                //if (lineCount == entry.startPos) {
-                //    caretPos = codeArea.getCaretPosition();
-                //}
                 codeArea.appendText(line +  newLineSymbol);
-                //++lineCount;
             }
-            //codeArea.positionCaret(caretPos);
-            //codeArea.selectPositionCaret(entry.endPos);
+            // Pre-select the text range we are interested in
             codeArea.selectRange(entry.startPos, entry.endPos);
+            // TODO: Add to clipboard as well?
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
