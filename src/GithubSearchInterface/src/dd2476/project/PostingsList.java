@@ -2,9 +2,9 @@ package dd2476.project;
 
 import java.util.ArrayList;
 
-public class PostingsList {
+class PostingsList {
     ArrayList<PostingsEntry> postings;
-    QueryType queryType;
+    private QueryType queryType;
 
     public PostingsList(QueryType queryType){
         this.queryType = queryType;

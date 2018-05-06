@@ -1,7 +1,6 @@
 package dd2476.project;
 
 import javafx.event.ActionEvent;
-import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -10,11 +9,9 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Stream;
 
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import org.json.JSONArray;
@@ -22,8 +19,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Controller {
-    final static String INDEX_NAME = "test";
-    final static String ES_URL = "http://localhost:9200/";
+    private final static String INDEX_NAME = "test";
+    private final static String ES_URL = "http://localhost:9200/";
 
     @FXML
     ListView<PostingsEntry> resultsListView;
@@ -43,9 +40,10 @@ public class Controller {
     @FXML
     public void initialize() {
         infoLabel.setText("Press enter to search");
-        System.err.println(System.getProperty("user.dir"));
+
+        // Handle what happens when user clicks a result on the list
         resultsListView.setOnMouseClicked((event) -> {
-            // A search result was clicked, find out which one
+            // Find out which result item was clicked
             PostingsEntry clickedEntry = resultsListView.getSelectionModel().getSelectedItem();
             if (clickedEntry != null) {
                 // Show detailed information to user
@@ -55,8 +53,10 @@ public class Controller {
     }
 
     private void openResultEntry(PostingsEntry entry) {
-        StackPane detailsLayout = new StackPane();
+        // TextArea for displaying file contents of clicked result posting
         TextArea codeArea = new TextArea();
+        // Settings for the new window that we will open
+        StackPane detailsLayout = new StackPane();
         detailsLayout.getChildren().add(codeArea);
         Scene detailsScene = new Scene(detailsLayout, 600, 800);
         Stage detailsWindow = new Stage();
@@ -66,19 +66,22 @@ public class Controller {
         String newLineSymbol = System.getProperty("line.separator");
         try (BufferedReader br = new BufferedReader(new FileReader(entry.getFilepath()))) {
             String line;
-            // TODO: RichTextFX
+            // TODO: RichTextFX instead of TextArea?
             while ((line = br.readLine()) != null) {
                 codeArea.appendText(line +  newLineSymbol);
             }
             // Pre-select the text range we are interested in
             codeArea.selectRange(entry.startPos, entry.endPos);
-            // TODO: Add to clipboard as well?
+            // Copy selected text to clipboard
+            Clipboard sysClipboard = Clipboard.getSystemClipboard();
+            ClipboardContent content = new ClipboardContent();
+            content.putString(codeArea.getSelectedText());
+            sysClipboard.setContent(content);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         detailsWindow.show();
     }
 
@@ -97,6 +100,7 @@ public class Controller {
             key = "?q="+query.type.name().toLowerCase()+":"+query.term;
         }
         try {
+            // Open a connection to elasticsearch and send the request, receive response.
             queryURL = new URL(ES_URL + INDEX_NAME + "/_search/" + key);
             URLConnection conn = queryURL.openConnection();
             BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF8"));
@@ -108,6 +112,7 @@ public class Controller {
             }
             in.close();
 
+            // Parse the received JSON data
             JSONObject jsonObject = new JSONObject(response.toString());
             JSONObject hitsObject = jsonObject.getJSONObject("hits");
             int nrofHits = hitsObject.getInt("total");
@@ -148,7 +153,6 @@ public class Controller {
                         }
 
                     } else if (query.type == QueryType.PACKAGE) {
-                        // TODO: Implement package search
                             PostingsEntry foundEntry = new PostingsEntry();
                             foundEntry.filename = filename;
                             foundEntry.filepath = filepath;
@@ -180,7 +184,7 @@ public class Controller {
 
     public void onEnter(ActionEvent e) {
         String queryFieldText = queryField.getText().trim();
-        if (queryFieldText != null) {
+        if (!queryFieldText.equals("")) {
             Query query;
             if (functionSearchRadio.isSelected()) {
                 query = new Query(queryFieldText, QueryType.FUNCTIONS);
@@ -198,8 +202,9 @@ public class Controller {
                 infoLabel.setText("Number of hits: " + plist.postings.size());
                 updateListView(plist);
             }
+            // TODO: Implement search with combinations of function, class, package etc.
         } else {
-            System.out.println("error: empty query received");
+            System.out.println("empty query received");
         }
     }
 }

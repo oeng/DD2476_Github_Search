@@ -1,6 +1,6 @@
 package dd2476.project;
 
-public class Query {
+class Query {
     public String term;
     public QueryType type;
 
