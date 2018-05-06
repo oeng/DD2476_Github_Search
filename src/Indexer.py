@@ -3,7 +3,8 @@ from collections import deque
 
 from elasticsearch import Elasticsearch, helpers
 
-from src.Analyzer import Analyzer
+# from src.Analyzer import Analyzer
+from Analyzer import Analyzer
 
 
 class Indexer:
