@@ -3,8 +3,8 @@ from collections import deque
 
 from elasticsearch import Elasticsearch, helpers
 
-# from src.Analyzer import Analyzer
-from Analyzer import Analyzer
+from src.Analyzer import Analyzer
+# from Analyzer import Analyzer
 
 
 class Indexer:
@@ -42,7 +42,8 @@ class Indexer:
                             'type': 'nested',
                             'properties': {
                                 'name': {'type': 'text', 'analyzer': 'camel'},
-                                'row': {'type': 'integer'}
+                                'row': {'type': 'integer'},
+                                'return_type':{'type':'text'}
                             },
                         },
                         'classes': {

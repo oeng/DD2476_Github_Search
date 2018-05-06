@@ -29,9 +29,14 @@ class JavaParser:
                 f = {'name': node.name, 'row': row}
                 self.classes.append(f)
             elif isinstance(node, tree.MethodDeclaration):
+                if(node.return_type is not None):
+                    return_type=node.return_type.name
+                else:
+                    return_type='void'
                 # attrs = ("type_parameters", "return_type", "name", "parameters", "throws", "body")
                 row = node.position[0]
-                f = {'name': node.name, 'row': row}
+                f = {'name': node.name, 'row': row, 'return_type':return_type}
+                # f = {'name': node.name, 'row': row}
                 self.functions.append(f)
 
     def get_package_name(self):

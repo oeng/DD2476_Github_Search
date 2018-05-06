@@ -7,8 +7,8 @@ import io
 
 import javalang
 
-# from src.JavaParser import JavaParser
 from src.JavaParser import JavaParser
+# from JavaParser import JavaParser
 
 
 def test():
