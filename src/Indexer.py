@@ -42,15 +42,17 @@ class Indexer:
                             'type': 'nested',
                             'properties': {
                                 'name': {'type': 'text', 'analyzer': 'camel'},
-                                'row': {'type': 'integer'},
-                                'return_type':{'type':'text'}
+                                'start_row': {'type': 'integer'},
+                                'end_row': {'type': 'integer'},
+                                'return_type':{'type':'text'},
                             },
                         },
                         'classes': {
                             'type': 'nested',
                             'properties': {
                                 'name': {'type': 'text', 'analyzer': 'camel'},
-                                'row': {'type': 'integer'}
+                                'start_row': {'type': 'integer'},
+                                'end_row': {'type': 'integer'},
                             },
                         }
                     }

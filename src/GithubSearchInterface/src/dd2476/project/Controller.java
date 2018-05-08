@@ -89,7 +89,9 @@ public class Controller {
                 codeArea.appendText(line + newLineSymbol);
                 ++lineNumber;
             }
-            codeArea.setStyle(entry.startPos - 1, "-fx-fill:red;");
+            for(int i = entry.startPos-1; i < entry.endPos; i++) {
+                codeArea.setStyle(i, "-fx-fill:red;");
+            }
             codeArea.moveTo(entry.startPos - 1, 0);
             codeArea.scrollToPixel(entry.startPos, 0);
         } catch (FileNotFoundException e) {
@@ -151,7 +153,8 @@ public class Controller {
                             foundEntry.filepath = filepath;
                             foundEntry.pkg = pkg;
                             foundEntry.name = function.getString("name");
-                            foundEntry.startPos = function.getInt("row");
+                            foundEntry.startPos = function.getInt("start_row");
+                            foundEntry.endPos = function.getInt("end_row");
                             searchResults.addPostingsEntry(foundEntry);
                         }
 
@@ -163,7 +166,8 @@ public class Controller {
                             foundEntry.filepath = filepath;
                             foundEntry.pkg = pkg;
                             foundEntry.name = klass.getString("name");
-                            foundEntry.startPos = klass.getInt("row");
+                            foundEntry.startPos = klass.getInt("start_row");
+                            foundEntry.endPos = klass.getInt("end_row");
                             searchResults.addPostingsEntry(foundEntry);
                         }
 
