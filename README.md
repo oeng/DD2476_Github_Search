@@ -1,13 +1,21 @@
-Source files in src/
+## Crawler and Indexer
+Python 3 is used. Source files in src/
 
+### Install python dependencies:
+`pip install -r requirements.txt`
 
-Python 3 is used.
-Install python dependencies:
-pip install -r requirements.txt
+### To crawl and index, run:
+`python -m src.Crawler`
+`python -m src.Indexer`
 
-To run:
-python3 -m src.Crawler
-python3 -m src.Indexer
+## Interface
+Source files in src/GithubSearchInterface/
+
+Java 8 with JavaFX is used.
+
+### Dependencies:
+- [richtextfx-0.9.0.jar](https://github.com/TomasMikula/RichTextFX/releases/download/v0.9.0/richtextfx-0.9.0.jar)
+- [org.json.jar](http://www.java2s.com/Code/JarDownload/org.json/org.json.jar.zip) (zipped)
 
 ## Project Specification
 
