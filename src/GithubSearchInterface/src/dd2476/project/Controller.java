@@ -88,7 +88,7 @@ public class Controller {
                 //if (lineNumber < entry.startPos) {
                 //    endPos += line.getBytes().length;
                 //}
-                codeArea.appendText(line + newLineSymbol);
+                codeArea.appendText(String.format("%4d",lineNumber) + "   " + line + newLineSymbol);
                 if (lineNumber >= entry.startPos-1 && lineNumber <= entry.endPos-1) {
                     codeArea.setParagraphStyle(lineNumber, "-fx-background-color: #c8ccd0;");
                 }
