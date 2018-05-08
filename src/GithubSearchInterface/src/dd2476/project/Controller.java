@@ -5,7 +5,9 @@ import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 
+
 import java.io.*;
+import java.util.Collections;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -87,10 +89,10 @@ public class Controller {
                 //    endPos += line.getBytes().length;
                 //}
                 codeArea.appendText(line + newLineSymbol);
+                if (lineNumber >= entry.startPos-1 && lineNumber <= entry.endPos-1) {
+                    codeArea.setParagraphStyle(lineNumber, "-fx-background-color: #c8ccd0;");
+                }
                 ++lineNumber;
-            }
-            for(int i = entry.startPos-1; i < entry.endPos; i++) {
-                codeArea.setStyle(i, "-fx-fill:red;");
             }
             codeArea.moveTo(entry.startPos - 1, 0);
             codeArea.scrollToPixel(entry.startPos, 0);
