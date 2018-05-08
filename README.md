@@ -17,6 +17,21 @@ Java 8 with JavaFX is used.
 - [richtextfx-0.9.0.jar](https://github.com/TomasMikula/RichTextFX/releases/download/v0.9.0/richtextfx-0.9.0.jar)
 - [org.json.jar](http://www.java2s.com/Code/JarDownload/org.json/org.json.jar.zip) (zipped)
 
+### Runing the interface
+#### Windows
+```bat
+cd src\GithubSearchInterface\
+if not exist classes mkdir classes
+javac -cp "imports/*" -d ./classes ./src/dd2476/project/*.java
+java -cp "classes;imports/*;src" dd2476.project.Main
+```
+
+#### OS X
+*work in progress*
+
+#### Linux
+*work in progress*
+
 ## Project Specification
 
 - [x] Crawl (a part of) the publicly available GitHub code.
