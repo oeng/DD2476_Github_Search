@@ -19,6 +19,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
+import javafx.application.Platform;
 import org.fxmisc.richtext.InlineCssTextArea;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -61,11 +62,15 @@ public class Controller {
     }
 
     private void openResultEntry(PostingsEntry entry) {
+        int width = 600;
+        int height = 800;
+        int lineHeight = height/50;
+        int linesBeforeHighlight = 4;
         InlineCssTextArea codeArea = new InlineCssTextArea();
         // Settings for the new window that we will open
         StackPane detailsLayout = new StackPane();
         detailsLayout.getChildren().add(codeArea);
-        Scene detailsScene = new Scene(detailsLayout, 600, 800);
+        Scene detailsScene = new Scene(detailsLayout, width, height);
         Stage detailsWindow = new Stage();
         detailsWindow.setScene(detailsScene);
         detailsWindow.setTitle("Showing result found in: " + entry.getRepo());
@@ -94,7 +99,6 @@ public class Controller {
                 }
                 ++lineNumber;
             }
-            codeArea.moveTo(entry.startPos - 1, 0);
             codeArea.scrollToPixel(entry.startPos, 0);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -102,6 +106,7 @@ public class Controller {
             e.printStackTrace();
         }
         detailsWindow.show();
+        Platform.runLater(() -> codeArea.scrollYBy((entry.startPos-linesBeforeHighlight)*lineHeight));
     }
 
     private void updateListView(PostingsList plist) {
