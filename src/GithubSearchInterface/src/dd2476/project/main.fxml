@@ -53,7 +53,7 @@
     </MenuBar>
     <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" style="-fx-background-color: #24292E;" VBox.vgrow="ALWAYS">
       <children>
-            <TextField id="queryField" fx:id="queryField" layoutX="53.0" layoutY="53.0" onAction="#onEnter" prefHeight="37.0" prefWidth="535.0" promptText="Enter function or class name" style="-fx-background-color: #3F4448;" AnchorPane.leftAnchor="53.0" AnchorPane.rightAnchor="52.0" AnchorPane.topAnchor="53.0" />
+            <TextField id="queryField" fx:id="queryField" layoutX="53.0" layoutY="53.0" onAction="#onEnter" prefHeight="37.0" prefWidth="535.0" promptText="Enter function or class name" style="-fx-background-color: #3F4448; -fx-text-fill:white;" AnchorPane.leftAnchor="53.0" AnchorPane.rightAnchor="52.0" AnchorPane.topAnchor="53.0" />
             <Label layoutX="52.0" layoutY="14.0" text="Search for code snippets" textFill="#8d9092">
                <font>
                   <Font size="19.0" />
