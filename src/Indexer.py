@@ -34,7 +34,8 @@ class Indexer:
             'mappings': {
                 'java': {
                     'properties': {
-                        'type': 'nested',
+                        # 'type': 'nested', # Tror denna måste bort för att
+                        # dokumenten ska bli nested.
                         'filename': {'type': 'text', 'analyzer': 'camel'},
                         'filepath': {'type': 'keyword'},
                         'package': {'type': 'text', 'analyzer': 'simple'},

@@ -1,31 +1,21 @@
 package dd2476.project;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-
-
-import java.io.*;
-import java.util.Collections;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
-
-import javafx.scene.input.Clipboard;
-import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
-import javafx.application.Platform;
 import org.fxmisc.richtext.InlineCssTextArea;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import org.fxmisc.richtext.CodeArea;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 public class Controller {
     private final static String INDEX_NAME = "test";
@@ -118,19 +108,32 @@ public class Controller {
         PostingsList searchResults = new PostingsList(query.type);
         URL queryURL;
         String key = "";
-        if (query.type == QueryType.FUNCTIONS || query.type == QueryType.CLASSES) {
-            key = "?q="+query.type.name().toLowerCase()+".name:"+query.term;
-        } else if (query.type == QueryType.PACKAGE) {
-            key = "?q="+query.type.name().toLowerCase()+":"+query.term;
+        String jbody = "";
+        if (query.type == QueryType.FUNCTIONS ) {
+            // key = "?q="+query.type.name().toLowerCase()+".name:"+query.term;
+            jbody = new JsonQueryBody().getNestedQuery(query.term, "functions", "name").toString();
+        }else if(query.type == QueryType.CLASSES) {
+            jbody = new JsonQueryBody().getNestedQuery(query.term, "classes","name").toString();
+        }
+        else if (query.type == QueryType.PACKAGE) {
+            // key = "?q="+query.type.name().toLowerCase()+":"+query.term;
+            jbody = new JsonQueryBody().getMatchQuery(query.term, "package").toString();
         }
         try {
             // Open a connection to elasticsearch and send the request, receive response.
-            queryURL = new URL(ES_URL + INDEX_NAME + "/_search/" + key);
-            URLConnection conn = queryURL.openConnection();
-            BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF8"));
+            queryURL = new URL(ES_URL + INDEX_NAME + "/_search/");
+            HttpURLConnection conn = (HttpURLConnection) queryURL.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setDoOutput(true);
+            conn.setRequestProperty("Content-Type", "application/json");
+            OutputStreamWriter out = new OutputStreamWriter(conn.getOutputStream());
+            out.write(jbody);
+            out.flush();
+            out.close();
+            InputStream is = conn.getInputStream();
+            BufferedReader in = new BufferedReader(new InputStreamReader(is));
             StringBuilder response = new StringBuilder();
             String inputLine;
-
             while ((inputLine = in.readLine()) != null) {
                 response.append(inputLine);
             }
@@ -149,13 +152,12 @@ public class Controller {
                     String filename = _sourceObject.getString("filename");
                     String filepath = _sourceObject.getString("filepath");
                     String pkg = _sourceObject.getString("package");
-                    JSONArray functions = _sourceObject.getJSONArray("functions");
-                    JSONArray classes = _sourceObject.getJSONArray("classes");
-
                     if (query.type == QueryType.FUNCTIONS) {
+                        JSONArray functions = hitObject.getJSONObject("inner_hits").getJSONObject("functions").getJSONObject("hits").getJSONArray("hits");
+
                         for (int j = 0; j < functions.length(); ++j) {
                             PostingsEntry foundEntry = new PostingsEntry();
-                            JSONObject function = functions.getJSONObject(j);
+                            JSONObject function = functions.getJSONObject(j).getJSONObject("_source");
                             foundEntry.filename = filename;
                             foundEntry.filepath = filepath;
                             foundEntry.pkg = pkg;
@@ -166,9 +168,10 @@ public class Controller {
                         }
 
                     } else if (query.type == QueryType.CLASSES) {
-                        for (int j = 0; j < classes.length(); ++j) {
+                        JSONArray klasses = hitObject.getJSONObject("inner_hits").getJSONObject("classes").getJSONObject("hits").getJSONArray("hits");
+                        for (int j = 0; j < klasses.length(); ++j) {
                             PostingsEntry foundEntry = new PostingsEntry();
-                            JSONObject klass = functions.getJSONObject(j);
+                            JSONObject klass = klasses.getJSONObject(j).getJSONObject("_source");
                             foundEntry.filename = filename;
                             foundEntry.filepath = filepath;
                             foundEntry.pkg = pkg;
