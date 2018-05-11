@@ -26,7 +26,6 @@ class JavaParser:
         self.tree = javalang.parse.parse(content)
         # print(tree.package.name)
         package_name = self.get_package_name()
-        print(package_name)
         for path, node in self.tree:
             if isinstance(node, tree.ClassDeclaration):
                 # attrs = ("type_parameters", "extends", "implements")
