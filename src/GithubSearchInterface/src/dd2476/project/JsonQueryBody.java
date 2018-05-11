@@ -71,4 +71,37 @@ public class JsonQueryBody {
         return jsonQuery;
 
     }
+
+    /**
+     * @param searchParameter search term, will be matched
+     * @param field the field to search on eg name or start_row
+     * @param filter the categories to filter
+     * @return
+     */
+    public JSONObject getMatchQueryFilter(String searchParameter, String field, String filter){
+        JSONObject jsonQuery = new JSONObject();
+        JSONObject jsonBool = new JSONObject();
+        JSONObject jsonOptions = new JSONObject();
+        JSONObject jsonMust = new JSONObject();
+        JSONObject jsonFilter = new JSONObject();
+        JSONObject jsonTerm = new JSONObject();
+        JSONObject jsonMatch = new JSONObject();
+        JSONObject jsonMatchTerm = new JSONObject();
+        JSONObject jsonFilterTerm = new JSONObject();
+        try {
+            jsonQuery.put("query", jsonBool);
+            jsonBool.put("bool", jsonOptions);
+            jsonOptions.put("must", jsonMust);
+            jsonOptions.put("filter", jsonFilter);
+            jsonMust.put("match", jsonMatch);
+            jsonMatch.put(field, searchParameter);
+            jsonFilter.put("term", jsonTerm);
+            jsonTerm.put("category", filter);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return jsonQuery;
+    }
 }
+

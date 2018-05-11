@@ -4,7 +4,7 @@ from collections import deque
 from elasticsearch import Elasticsearch, helpers
 
 from src.Analyzer import Analyzer
-# from Analyzer import Analyzer
+from src.Common import IndexSettings
 
 
 class Indexer:
@@ -20,46 +20,7 @@ class Indexer:
         # https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-pattern-analyzer.html
         # https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping.html
         # Note: these settings are only taken into account for NEW indices
-        self.settings = {
-            'settings': {
-                'analysis': {
-                    'analyzer': {
-                        'camel': {
-                            'type': 'pattern',
-                            'pattern': '([^\\p{L}\\d]+)|(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)|(?<=[\\p{L}&&[^\\p{Lu}]])(?=\\p{Lu})|(?<=\\p{Lu})(?=\\p{Lu}[\\p{L}&&[^\\p{Lu}]])'
-                        }
-                    }
-                }
-            },
-            'mappings': {
-                'java': {
-                    'properties': {
-                        # 'type': 'nested', # Tror denna måste bort för att
-                        # dokumenten ska bli nested.
-                        'filename': {'type': 'text', 'analyzer': 'camel'},
-                        'filepath': {'type': 'keyword'},
-                        'package': {'type': 'text', 'analyzer': 'simple'},
-                        'functions': {
-                            'type': 'nested',
-                            'properties': {
-                                'name': {'type': 'text', 'analyzer': 'camel'},
-                                'start_row': {'type': 'integer'},
-                                'end_row': {'type': 'integer'},
-                                'return_type':{'type':'text'},
-                            },
-                        },
-                        'classes': {
-                            'type': 'nested',
-                            'properties': {
-                                'name': {'type': 'text', 'analyzer': 'camel'},
-                                'start_row': {'type': 'integer'},
-                                'end_row': {'type': 'integer'},
-                            },
-                        }
-                    }
-                }
-            }
-        }
+        self.settings = IndexSettings.settings_separate
 
         # Init index
         self.es.indices.create(
@@ -95,14 +56,15 @@ class Indexer:
         # https://elasticsearch-py.readthedocs.io/en/master/helpers.html?highlight=bulk
         deque(helpers.parallel_bulk(
             self.es,
-            analyzer.get_analyzed_file(),
+            # analyzer.get_analyzed_file(),
+            analyzer.get_analyzed_file_separate(),
             thread_count=4,
             index=self.index_to_use,
             doc_type='java',
             chunk_size=50
         ))
         # for d in analyzer.get_analyzed_file():
-            # self.index_document(d)
+        # self.index_document(d)
 
 
 if __name__ == '__main__':

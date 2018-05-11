@@ -38,6 +38,38 @@ class Analyzer:
     def __init__(self):
         self.repo_path = 'download_repo'
 
+    def get_analyzed_file_separate(self):
+        """
+        Yield an analyzed file one document for each category (class, method)
+
+        :return: dict containing: filename, filepath, package, name, return_type (method only), start_row, end_row
+        """
+        for filename, filepath, content in self.get_files_generator():
+            try:
+                parser = JavaParser()
+                parser.parse_separate(content)
+                # print('Analyzed file: ', filepath)
+            except Exception as e:
+                print(e)
+                print('Warning skipping file: ', filepath, file=sys.stderr)
+                continue
+
+            # Create data strucure for elastic search here directly
+            # Nested representation is handled automatically by elastic search
+            # https://www.elastic.co/guide/en/elasticsearch/reference/current/nested.html
+            for doc in parser.get_content():
+                d = {
+                    'filename': filename,
+                    'filepath': filepath,
+                    'category': doc.get('category'),
+                    'name': doc.get('name'),
+                    'start_row': doc.get('start_row'),
+                    'end_row': doc.get('end_row'),
+                    'return_type': doc.get('return_type'),
+                    'package': doc.get('package'),
+                }
+                yield d
+
     def get_analyzed_file(self):
         """
         Yield an analyzed file
@@ -46,7 +78,8 @@ class Analyzer:
         """
         for filename, filepath, content in self.get_files_generator():
             try:
-                parser = JavaParser(content)
+                parser = JavaParser()
+                parser.parse(content)
                 # print('Analyzed file: ', filepath)
             except Exception as e:
                 print('Warning skipping file: ', filepath, file=sys.stderr)
@@ -77,7 +110,7 @@ class Analyzer:
             filename = os.path.basename(filepath)
             try:
                 with open(filepath, 'r') as f:
-                        content = f.read()
+                    content = f.read()
             except Exception as e:
                 # If the crawling was aborted, it is possible that files are corrupt
                 content = ''
@@ -107,7 +140,8 @@ class Analyzer:
         """
 
         # Regex source: https://stackoverflow.com/a/2319146
-        pattern = re.compile('(\/\*([^*]|[\r\n]|(\*+([^*\/]|[\r\n])))*\*+\/)|(\/\/.*)')
+        pattern = re.compile(
+            '(\/\*([^*]|[\r\n]|(\*+([^*\/]|[\r\n])))*\*+\/)|(\/\/.*)')
         content = re.sub(pattern, ' ', content)
         return content
 
@@ -162,9 +196,10 @@ class Analyzer:
         :return list of tuple: [(class name, start pos, end pos)]
         """
         classes = []
-        match = re.finditer(r"(?:(?:(public|private|protected|static|final|abstract)\s+)*)(?:(class|interface|enum)\s+)(\w+)(((\s+)?<\s*\w+(\.\w+)*(\s*,\s*\w+(\.\w+)*\s*)*>)?)\s*((extends\s+\w+(\.\w+)*((\s+)?<.*>)?\s*)|(implements\s+(\s*(\w+(\.\w+)*((\s+)?<.*>)?)\s*,)*\s*(\w+(\.\w+)*((\s+)?<.*>)?)\s*))*(?={)", content)
+        match = re.finditer(
+            r"(?:(?:(public|private|protected|static|final|abstract)\s+)*)(?:(class|interface|enum)\s+)(\w+)(((\s+)?<\s*\w+(\.\w+)*(\s*,\s*\w+(\.\w+)*\s*)*>)?)\s*((extends\s+\w+(\.\w+)*((\s+)?<.*>)?\s*)|(implements\s+(\s*(\w+(\.\w+)*((\s+)?<.*>)?)\s*,)*\s*(\w+(\.\w+)*((\s+)?<.*>)?)\s*))*(?={)", content)
 
-        valid_format, end_row = Analyzer().check_brace_balance(filename, filepath, content);
+        valid_format, end_row = Analyzer().check_brace_balance(filename, filepath, content)
 
         if valid_format:
             for m in match:
@@ -175,10 +210,9 @@ class Analyzer:
         if end_row > -1 and not classes:
             print(filepath + filename)
 
-
         return classes
 
-    def check_brace_balance(self, filename, filepath, content ):
+    def check_brace_balance(self, filename, filepath, content):
         """
         Checks content for balanced braces while keeping content untouched.
         Reads per line for storage of row in index.
@@ -190,7 +224,7 @@ class Analyzer:
 
         stack = []
         row = 0
-        ignore_braces = False;
+        ignore_braces = False
         it = iter(io.StringIO(content).readlines())
 
         while True:
@@ -198,7 +232,7 @@ class Analyzer:
                 row += 1
                 line = next(it)
                 char_it = iter(line)
-                prev_c = '';
+                prev_c = ''
                 while True:
                     try:
                         c = next(char_it)
@@ -216,8 +250,7 @@ class Analyzer:
                         if c == '*':
                             c = next(char_it)
                             if c == '/':
-                                ignore_braces = False;
-
+                                ignore_braces = False
 
                         if not ignore_braces:
                             try:
@@ -232,8 +265,10 @@ class Analyzer:
                                         if len(stack) == 0:
                                             return True, row
                                     else:
-                                        print("\nBad format: " + filepath + filename)
-                                        print("Line %s: found (), whould have been {}" % row)
+                                        print("\nBad format: " +
+                                              filepath + filename)
+                                        print(
+                                            "Line %s: found (), whould have been {}" % row)
                                         return False, -1
                                 # Matching of right-side }. Pop stack
                                 if c == '}':
@@ -243,16 +278,19 @@ class Analyzer:
                                         if len(stack) == 0:
                                             return True, row
                                     else:
-                                        print("\nBad format: " + filepath + filename)
-                                        print("Line %s: found (), whould have been {}" % row)
+                                        print("\nBad format: " +
+                                              filepath + filename)
+                                        print(
+                                            "Line %s: found (), whould have been {}" % row)
                                         return False, -1
                             except IndexError:
                                 print("\nBad format: " + filepath + filename)
-                                print("Line %s: pop on empty stack. Uneven braces." % row)
+                                print(
+                                    "Line %s: pop on empty stack. Uneven braces." % row)
                                 return False, -1
-                        prev_c = c;
+                        prev_c = c
                     except StopIteration:
-                        break;
+                        break
 
             except StopIteration:
                 break

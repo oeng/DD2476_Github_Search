@@ -111,12 +111,15 @@ public class Controller {
         String jbody = "";
         if (query.type == QueryType.FUNCTIONS ) {
             // key = "?q="+query.type.name().toLowerCase()+".name:"+query.term;
-            jbody = new JsonQueryBody().getNestedQuery(query.term, "functions", "name").toString();
+            // jbody = new JsonQueryBody().getNestedQuery(query.term, "functions", "name").toString();
+            jbody = new JsonQueryBody().getMatchQueryFilter(query.term, "name", "function").toString();
         }else if(query.type == QueryType.CLASSES) {
-            jbody = new JsonQueryBody().getNestedQuery(query.term, "classes","name").toString();
+            // jbody = new JsonQueryBody().getNestedQuery(query.term, "classes","name").toString();
+            jbody = new JsonQueryBody().getMatchQueryFilter(query.term, "name", "class").toString();
         }
         else if (query.type == QueryType.PACKAGE) {
             // key = "?q="+query.type.name().toLowerCase()+":"+query.term;
+            // jbody = new JsonQueryBody().getMatchQuery(query.term, "package").toString();
             jbody = new JsonQueryBody().getMatchQuery(query.term, "package").toString();
         }
         try {
@@ -147,50 +150,20 @@ public class Controller {
             if (nrofHits > 0) {
                 JSONArray hitsArray = hitsObject.getJSONArray("hits");
                 for (int i = 0; i < hitsArray.length(); ++i) {
-                    JSONObject hitObject = hitsArray.getJSONObject(i);
-                    JSONObject _sourceObject = hitObject.getJSONObject("_source");
-                    String filename = _sourceObject.getString("filename");
-                    String filepath = _sourceObject.getString("filepath");
-                    String pkg = _sourceObject.getString("package");
-                    if (query.type == QueryType.FUNCTIONS) {
-                        JSONArray functions = hitObject.getJSONObject("inner_hits").getJSONObject("functions").getJSONObject("hits").getJSONArray("hits");
-
-                        for (int j = 0; j < functions.length(); ++j) {
-                            PostingsEntry foundEntry = new PostingsEntry();
-                            JSONObject function = functions.getJSONObject(j).getJSONObject("_source");
-                            foundEntry.filename = filename;
-                            foundEntry.filepath = filepath;
-                            foundEntry.pkg = pkg;
-                            foundEntry.name = function.getString("name");
-                            foundEntry.startPos = function.getInt("start_row");
-                            foundEntry.endPos = function.getInt("end_row");
-                            searchResults.addPostingsEntry(foundEntry);
-                        }
-
-                    } else if (query.type == QueryType.CLASSES) {
-                        JSONArray klasses = hitObject.getJSONObject("inner_hits").getJSONObject("classes").getJSONObject("hits").getJSONArray("hits");
-                        for (int j = 0; j < klasses.length(); ++j) {
-                            PostingsEntry foundEntry = new PostingsEntry();
-                            JSONObject klass = klasses.getJSONObject(j).getJSONObject("_source");
-                            foundEntry.filename = filename;
-                            foundEntry.filepath = filepath;
-                            foundEntry.pkg = pkg;
-                            foundEntry.name = klass.getString("name");
-                            foundEntry.startPos = klass.getInt("start_row");
-                            foundEntry.endPos = klass.getInt("end_row");
-                            searchResults.addPostingsEntry(foundEntry);
-                        }
-
-                    } else if (query.type == QueryType.PACKAGE) {
-                            PostingsEntry foundEntry = new PostingsEntry();
-                            foundEntry.filename = filename;
-                            foundEntry.filepath = filepath;
-                            foundEntry.pkg = pkg;
-                            foundEntry.name = pkg;
-                            foundEntry.startPos = 0;
-                            searchResults.addPostingsEntry(foundEntry);
-
-                        } else {
+                    PostingsEntry foundEntry = new PostingsEntry();
+                    JSONObject object = hitsArray.getJSONObject(i).getJSONObject("_source");
+                    foundEntry.filename = object.getString("filename");
+                    foundEntry.filepath = object.getString("filepath");
+                    foundEntry.pkg = object.getString("package");
+                    if (query.type == QueryType.FUNCTIONS || query.type == QueryType.CLASSES) {
+                        foundEntry.name = object.getString("name");
+                        foundEntry.startPos = object.getInt("start_row");
+                        foundEntry.endPos = object.getInt("end_row");
+                        searchResults.addPostingsEntry(foundEntry);
+                    }else if (query.type == QueryType.PACKAGE){
+                        foundEntry.startPos = 0;
+                        searchResults.addPostingsEntry(foundEntry);
+                    }else {
                         System.err.println("error: unknown query type");
                         return searchResults;
                     }
