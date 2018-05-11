@@ -88,13 +88,16 @@ public class JsonQueryBody {
         JSONObject jsonMatch = new JSONObject();
         JSONObject jsonMatchTerm = new JSONObject();
         JSONObject jsonFilterTerm = new JSONObject();
+        JSONObject jsonName = new JSONObject();
+        JSONObject jsonInnerQuery = new JSONObject();
         try {
             jsonQuery.put("query", jsonBool);
             jsonBool.put("bool", jsonOptions);
             jsonOptions.put("must", jsonMust);
             jsonOptions.put("filter", jsonFilter);
             jsonMust.put("match", jsonMatch);
-            jsonMatch.put(field, searchParameter);
+            jsonMatch.put(field, jsonInnerQuery);
+            jsonInnerQuery.put("query", searchParameter);
             jsonFilter.put("term", jsonTerm);
             jsonTerm.put("category", filter);
 
@@ -104,4 +107,3 @@ public class JsonQueryBody {
         return jsonQuery;
     }
 }
-
