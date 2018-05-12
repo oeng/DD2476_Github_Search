@@ -36,14 +36,14 @@ public class Controller {
     @FXML
     RadioMenuItem packageSearchRadio;
     @FXML
-    ComboBox numResultsComboBox;
+    ComboBox<Integer> numResultsComboBox;
 
     @FXML
     public void initialize() {
         infoLabel.setText("Press enter to search");
 
         // How many results to show
-        numResultsComboBox.getItems().addAll(10, 20, 30, 40, 50);
+        numResultsComboBox.getItems().addAll(10, 20, 30, 40, 50, 75, 100, 150, 200);
 
         // Handle what happens when user clicks a result on the list
         resultsListView.setOnMouseClicked((event) -> {
@@ -69,7 +69,6 @@ public class Controller {
         Stage detailsWindow = new Stage();
         detailsWindow.setScene(detailsScene);
         detailsWindow.setTitle("Showing result found in: " + entry.getRepo());
-
         // TODO: Använd radnummer istället för absolutpositioner
         String newLineSymbol = System.getProperty("line.separator");
         int lineNumber = 0;
@@ -114,21 +113,25 @@ public class Controller {
         URL queryURL;
         String key = "";
         String jbody = "";
-        Integer numResults = (Integer) numResultsComboBox.getValue();
-        System.out.println(numResults);
-        if (query.type == QueryType.FUNCTIONS) {
-            // key = "?q="+query.type.name().toLowerCase()+".name:"+query.term;
-            // jbody = new JsonQueryBody().getNestedQuery(query.term, "functions", "name").toString();
-            jbody = new JsonQueryBody().getMatchQueryFilter(query.term, "name", "function", numResults).toString();
-        } else if (query.type == QueryType.CLASSES) {
-            // jbody = new JsonQueryBody().getNestedQuery(query.term, "classes","name").toString();
-            jbody = new JsonQueryBody().getMatchQueryFilter(query.term, "name", "class", numResults).toString();
-        } else if (query.type == QueryType.PACKAGE) {
-            // key = "?q="+query.type.name().toLowerCase()+":"+query.term;
-            // jbody = new JsonQueryBody().getMatchQuery(query.term, "package").toString();
-            jbody = new JsonQueryBody().getMatchQuery(query.term, "package", numResults).toString();
-        }
+        Integer numResults = numResultsComboBox.getValue();
+        Boolean filterReturnType = false; // TODO: Make value selectable from interface
         try {
+            if (query.type == QueryType.FUNCTIONS) {
+                JSONObject jsonBody = new JsonQueryBody().getMatchQueryFilter(query.term, "name", "function", numResults);
+                if (filterReturnType) {
+                    String returnType = "void"; //TODO: Make this value selectable from the interface
+                    JSONObject jsonTermReturn = new JSONObject();
+                    JSONObject jsonFilterReturn = new JSONObject();
+                    jsonFilterReturn.put("term", jsonTermReturn);
+                    jsonTermReturn.put("return_type", "void");
+                    jsonBody.getJSONObject("query").getJSONObject("bool").getJSONArray("filter").put(jsonFilterReturn);
+                }
+                jbody = jsonBody.toString();
+            } else if (query.type == QueryType.CLASSES) {
+                jbody = new JsonQueryBody().getMatchQueryFilter(query.term, "name", "class", numResults).toString();
+            } else if (query.type == QueryType.PACKAGE) {
+                jbody = new JsonQueryBody().getMatchQuery(query.term, "package", numResults).toString();
+            }
             // Open a connection to elasticsearch and send the request, receive response.
             queryURL = new URL(ES_URL + INDEX_NAME + "/_search/");
             HttpURLConnection conn = (HttpURLConnection) queryURL.openConnection();

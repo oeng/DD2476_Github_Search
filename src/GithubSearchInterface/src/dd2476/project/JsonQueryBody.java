@@ -88,6 +88,8 @@ public class JsonQueryBody {
         JSONObject jsonMust = new JSONObject();
         JSONObject jsonFilter = new JSONObject();
         JSONObject jsonTerm = new JSONObject();
+        JSONArray jsonMustOptions = new JSONArray();
+        JSONArray jsonFilterOptions = new JSONArray();
         JSONObject jsonMatch = new JSONObject();
         JSONObject jsonInnerQuery = new JSONObject();
         try {
@@ -95,8 +97,10 @@ public class JsonQueryBody {
             jsonQuery.put("from", 0);
             jsonQuery.put("size", numResults);
             jsonBool.put("bool", jsonOptions);
-            jsonOptions.put("must", jsonMust);
-            jsonOptions.put("filter", jsonFilter);
+            jsonOptions.put("must", jsonMustOptions);
+            jsonMustOptions.put(jsonMust);
+            jsonOptions.put("filter", jsonFilterOptions);
+            jsonFilterOptions.put(jsonFilter);
             jsonMust.put("match", jsonMatch);
             jsonMatch.put(field, jsonInnerQuery);
             jsonInnerQuery.put("query", searchParameter);
@@ -106,6 +110,7 @@ public class JsonQueryBody {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        System.out.println(jsonQuery);
         return jsonQuery;
     }
 }
