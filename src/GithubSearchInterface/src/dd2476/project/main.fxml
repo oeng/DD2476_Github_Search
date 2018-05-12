@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dd2476.project.Controller">
+<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dd2476.project.Controller">
   <children>
     <MenuBar VBox.vgrow="NEVER">
       <menus>
@@ -37,13 +37,13 @@
         </Menu>
         <Menu mnemonicParsing="false" text="Search settings">
                <items>
-                  <RadioMenuItem id="funcSearchRadio" fx:id="functionSearchRadio" mnemonicParsing="false" selected="true" text="Function search">
+                  <RadioMenuItem id="funcSearchRadio" fx:id="functionSearchRadio" mnemonicParsing="false" onAction="#onSelectFunctionSearch" selected="true" text="Function search">
                      <toggleGroup>
                         <ToggleGroup fx:id="toggleGroup" />
                      </toggleGroup>
                   </RadioMenuItem>
-                  <RadioMenuItem id="classSearchRadio" fx:id="classSearchRadio" mnemonicParsing="false" text="Class search" toggleGroup="$toggleGroup" />
-                  <RadioMenuItem fx:id="packageSearchRadio" mnemonicParsing="false" text="Package search" toggleGroup="$toggleGroup" />
+                  <RadioMenuItem id="classSearchRadio" fx:id="classSearchRadio" mnemonicParsing="false" onAction="#onSelectClassSearch" text="Class search" toggleGroup="$toggleGroup" />
+                  <RadioMenuItem fx:id="packageSearchRadio" mnemonicParsing="false" onAction="#onSelectPackageSearch" text="Package search" toggleGroup="$toggleGroup" />
                </items>
         </Menu>
         <Menu mnemonicParsing="false" text="Help">

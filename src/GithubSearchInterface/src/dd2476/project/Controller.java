@@ -210,6 +210,17 @@ public class Controller {
         returnTypeField.setDisable(!returnTypeCheckbox.isSelected());
     }
 
+    // Enable/disable return type checkbox when search method selected
+    public void onSelectFunctionSearch(ActionEvent e) {
+        returnTypeCheckbox.setDisable(false);
+    }
+    public void onSelectClassSearch(ActionEvent e) {
+        returnTypeCheckbox.setDisable(true);
+    }
+    public void onSelectPackageSearch(ActionEvent e) {
+        returnTypeCheckbox.setDisable(true);
+    }
+
     public void onEnter(ActionEvent e) {
         String queryFieldText = queryField.getText().trim();
         if (!queryFieldText.equals("")) {
