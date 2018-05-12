@@ -110,7 +110,6 @@ public class JsonQueryBody {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        System.out.println(jsonQuery);
         return jsonQuery;
     }
 }

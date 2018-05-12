@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
@@ -60,9 +61,11 @@
                   <Font size="19.0" />
                </font>
             </Label>
-            <ListView id="resultsListView" fx:id="resultsListView" layoutX="53.0" layoutY="133.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="206.0" prefWidth="535.0" style="-fx-background-radius: 4px; -fx-background-color: #3F4448;" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="53.0" AnchorPane.rightAnchor="52.0" AnchorPane.topAnchor="133.0" />
-            <Label fx:id="infoLabel" layoutX="53.0" layoutY="102.0" textFill="WHITE" />
+            <ListView id="resultsListView" fx:id="resultsListView" layoutX="53.0" layoutY="218.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="113.0" prefWidth="535.0" style="-fx-background-radius: 4px; -fx-background-color: #3F4448;" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="53.0" AnchorPane.rightAnchor="52.0" AnchorPane.topAnchor="218.0" />
+            <Label fx:id="infoLabel" layoutX="53.0" layoutY="110.0" prefHeight="17.0" prefWidth="195.0" textFill="WHITE" />
             <ComboBox id="numResultsComboBox" fx:id="numResultsComboBox" layoutX="463.0" layoutY="53.0" prefHeight="37.0" prefWidth="125.0" promptText="Num Results" style="-fx-background-color: #3F4448; -fx-prompt-text-fill: white; -fx-text-fill: white;" AnchorPane.rightAnchor="52.0" />
+            <TextField id="returnTypeField" fx:id="returnTypeField" disable="true" layoutX="53.0" layoutY="149.0" onAction="#onEnter" prefHeight="37.0" prefWidth="380.0" promptText="Return type" style="-fx-background-color: #3F4448; -fx-text-fill: #FFFFFF;" AnchorPane.leftAnchor="53.0" AnchorPane.rightAnchor="207.0" />
+            <CheckBox id="returnTypeCheckbox" fx:id="returnTypeCheckbox" alignment="CENTER" layoutX="463.0" layoutY="159.0" mnemonicParsing="false" onAction="#onReturnTypeCheckbox" prefHeight="18.0" prefWidth="125.0" text="Return Type" textAlignment="CENTER" textFill="WHITE" AnchorPane.rightAnchor="52.0" />
       </children>
     </AnchorPane>
   </children>

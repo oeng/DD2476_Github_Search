@@ -37,6 +37,10 @@ public class Controller {
     RadioMenuItem packageSearchRadio;
     @FXML
     ComboBox<Integer> numResultsComboBox;
+    @FXML
+    CheckBox returnTypeCheckbox;
+    @FXML
+    TextField returnTypeField;
 
     @FXML
     public void initialize() {
@@ -112,47 +116,30 @@ public class Controller {
         PostingsList searchResults = new PostingsList(query.type);
         URL queryURL;
         String key = "";
-        String jbody = "";
+        JSONObject jsonBody = new JSONObject();
         Integer numResults = numResultsComboBox.getValue();
-        Boolean filterReturnType = false; // TODO: Make value selectable from interface
+        Boolean filterReturnType = false;
         try {
             if (query.type == QueryType.FUNCTIONS) {
-                JSONObject jsonBody = new JsonQueryBody().getMatchQueryFilter(query.term, "name", "function", numResults);
-                if (filterReturnType) {
-                    String returnType = "void"; //TODO: Make this value selectable from the interface
+                jsonBody = new JsonQueryBody().getMatchQueryFilter(query.term, "name", "function", numResults);
+                if (returnTypeCheckbox.isSelected() && !returnTypeField.getText().isEmpty()) {
+                    String returnType = returnTypeField.getText();
                     JSONObject jsonTermReturn = new JSONObject();
                     JSONObject jsonFilterReturn = new JSONObject();
-                    jsonFilterReturn.put("term", jsonTermReturn);
-                    jsonTermReturn.put("return_type", "void");
+                    jsonFilterReturn.put("match", jsonTermReturn);
+                    jsonTermReturn.put("return_type", returnType);
                     jsonBody.getJSONObject("query").getJSONObject("bool").getJSONArray("filter").put(jsonFilterReturn);
                 }
-                jbody = jsonBody.toString();
             } else if (query.type == QueryType.CLASSES) {
-                jbody = new JsonQueryBody().getMatchQueryFilter(query.term, "name", "class", numResults).toString();
+                jsonBody = new JsonQueryBody().getMatchQueryFilter(query.term, "name", "class", numResults);
             } else if (query.type == QueryType.PACKAGE) {
-                jbody = new JsonQueryBody().getMatchQuery(query.term, "package", numResults).toString();
+                jsonBody = new JsonQueryBody().getMatchQuery(query.term, "package", numResults);
             }
             // Open a connection to elasticsearch and send the request, receive response.
             queryURL = new URL(ES_URL + INDEX_NAME + "/_search/");
-            HttpURLConnection conn = (HttpURLConnection) queryURL.openConnection();
-            conn.setRequestMethod("POST");
-            conn.setDoOutput(true);
-            conn.setRequestProperty("Content-Type", "application/json");
-            OutputStreamWriter out = new OutputStreamWriter(conn.getOutputStream());
-            out.write(jbody);
-            out.flush();
-            out.close();
-            InputStream is = conn.getInputStream();
-            BufferedReader in = new BufferedReader(new InputStreamReader(is));
-            StringBuilder response = new StringBuilder();
-            String inputLine;
-            while ((inputLine = in.readLine()) != null) {
-                response.append(inputLine);
-            }
-            in.close();
+            JSONObject jsonObject = this.getResponse(queryURL, jsonBody);
 
             // Parse the received JSON data
-            JSONObject jsonObject = new JSONObject(response.toString());
             JSONObject hitsObject = jsonObject.getJSONObject("hits");
             int nrofHits = hitsObject.getInt("total");
 
@@ -190,8 +177,38 @@ public class Controller {
         return searchResults;
     }
 
+    /**
+     * @param queryURL the URL to send a query to.
+     * @param jbody the JSONBody to pass in the request
+     * @return response JSONObject
+     * @throws IOException
+     */
+    public JSONObject getResponse(URL queryURL, JSONObject jbody) throws IOException, JSONException {
+        HttpURLConnection conn = (HttpURLConnection) queryURL.openConnection();
+        conn.setRequestMethod("POST");
+        conn.setDoOutput(true);
+        conn.setRequestProperty("Content-Type", "application/json");
+        OutputStreamWriter out = new OutputStreamWriter(conn.getOutputStream());
+        out.write(jbody.toString());
+        out.flush();
+        out.close();
+        InputStream is = conn.getInputStream();
+        BufferedReader in = new BufferedReader(new InputStreamReader(is));
+        StringBuilder response = new StringBuilder();
+        String inputLine;
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+        }
+        in.close();
+        JSONObject jsonResponse = new JSONObject(response.toString());
+        return jsonResponse;
+    }
+
 
     // ----- EVENT HANDLERS -----
+    public void onReturnTypeCheckbox(ActionEvent e) {
+        returnTypeField.setDisable(!returnTypeCheckbox.isSelected());
+    }
 
     public void onEnter(ActionEvent e) {
         String queryFieldText = queryField.getText().trim();
