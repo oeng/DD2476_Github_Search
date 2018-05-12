@@ -38,6 +38,8 @@ class Analyzer:
     # Constructor
     def __init__(self):
         self.repo_path = 'download_repo'
+        self.current_package = ""
+        self.package_counter = 0
 
     def get_analyzed_file_separate(self):
         """
@@ -72,8 +74,15 @@ class Analyzer:
                     'end_row': doc.get('end_row'),
                     'return_type': doc.get('return_type'),
                     'package': doc.get('package'),
+                    'package_id' : self.generate_package_id(doc.get('package'))
                 }
                 yield d
+
+    def generate_package_id(self, package):
+        if self.current_package != package:
+            self.package_counter += 1
+        self.current_package = package
+        return self.package_counter
 
     def get_analyzed_file(self):
         """
