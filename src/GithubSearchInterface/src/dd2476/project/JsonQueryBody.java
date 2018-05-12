@@ -54,14 +54,17 @@ public class JsonQueryBody {
      * Creates a simple query
      * @param searchParameter the parameter to search for.
      * @param field the field to search for
+     * @param numResults
      * @return
      */
-    public JSONObject getMatchQuery(String searchParameter, String field){
+    public JSONObject getMatchQuery(String searchParameter, String field, Integer numResults){
         JSONObject jsonQuery = new JSONObject();
         JSONObject jsonMatch = new JSONObject();
         JSONObject jsonField = new JSONObject();
         try {
             jsonQuery.put("query", jsonMatch);
+            jsonQuery.put("from", 0);
+            jsonQuery.put("size", numResults);
             jsonMatch.put("match", jsonField);
             jsonField.put(field, searchParameter);
         } catch (JSONException e) {
@@ -75,9 +78,10 @@ public class JsonQueryBody {
      * @param searchParameter search term, will be matched
      * @param field the field to search on eg name or start_row
      * @param filter the categories to filter
+     * @param numResults
      * @return
      */
-    public JSONObject getMatchQueryFilter(String searchParameter, String field, String filter){
+    public JSONObject getMatchQueryFilter(String searchParameter, String field, String filter, Integer numResults){
         JSONObject jsonQuery = new JSONObject();
         JSONObject jsonBool = new JSONObject();
         JSONObject jsonOptions = new JSONObject();
@@ -88,6 +92,8 @@ public class JsonQueryBody {
         JSONObject jsonInnerQuery = new JSONObject();
         try {
             jsonQuery.put("query", jsonBool);
+            jsonQuery.put("from", 0);
+            jsonQuery.put("size", numResults);
             jsonBool.put("bool", jsonOptions);
             jsonOptions.put("must", jsonMust);
             jsonOptions.put("filter", jsonFilter);

@@ -12,6 +12,7 @@ class IndexSettings:
         }
     }
 
+    # www.elastic.co/guide/en/elasticsearch/reference/current/analysis-pattern-capture-tokenfilter.html
     analyzer_pattern_capture = {
         'analysis': {
             'analyzer': {

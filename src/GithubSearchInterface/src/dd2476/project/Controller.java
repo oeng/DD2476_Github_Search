@@ -35,10 +35,15 @@ public class Controller {
     RadioMenuItem classSearchRadio;
     @FXML
     RadioMenuItem packageSearchRadio;
+    @FXML
+    ComboBox numResultsComboBox;
 
     @FXML
     public void initialize() {
         infoLabel.setText("Press enter to search");
+
+        // How many results to show
+        numResultsComboBox.getItems().addAll(10, 20, 30, 40, 50);
 
         // Handle what happens when user clicks a result on the list
         resultsListView.setOnMouseClicked((event) -> {
@@ -54,7 +59,7 @@ public class Controller {
     private void openResultEntry(PostingsEntry entry) {
         int width = 600;
         int height = 800;
-        int lineHeight = height/50;
+        int lineHeight = height / 50;
         int linesBeforeHighlight = 4;
         InlineCssTextArea codeArea = new InlineCssTextArea();
         // Settings for the new window that we will open
@@ -67,7 +72,7 @@ public class Controller {
 
         // TODO: Använd radnummer istället för absolutpositioner
         String newLineSymbol = System.getProperty("line.separator");
-        int lineNumber= 0;
+        int lineNumber = 0;
         int startPos = 0;
         int endPos = 0;
         try (BufferedReader br = new BufferedReader(new FileReader(entry.getFilepath()))) {
@@ -83,8 +88,8 @@ public class Controller {
                 //if (lineNumber < entry.startPos) {
                 //    endPos += line.getBytes().length;
                 //}
-                codeArea.appendText(String.format("%4d",lineNumber) + "   " + line + newLineSymbol);
-                if (lineNumber >= entry.startPos-1 && lineNumber <= entry.endPos-1) {
+                codeArea.appendText(String.format("%4d", lineNumber) + "   " + line + newLineSymbol);
+                if (lineNumber >= entry.startPos - 1 && lineNumber <= entry.endPos - 1) {
                     codeArea.setParagraphStyle(lineNumber, "-fx-background-color: #c8ccd0;");
                 }
                 ++lineNumber;
@@ -96,7 +101,7 @@ public class Controller {
             e.printStackTrace();
         }
         detailsWindow.show();
-        Platform.runLater(() -> codeArea.scrollYBy((entry.startPos-linesBeforeHighlight)*lineHeight));
+        Platform.runLater(() -> codeArea.scrollYBy((entry.startPos - linesBeforeHighlight) * lineHeight));
     }
 
     private void updateListView(PostingsList plist) {
@@ -109,18 +114,19 @@ public class Controller {
         URL queryURL;
         String key = "";
         String jbody = "";
-        if (query.type == QueryType.FUNCTIONS ) {
+        Integer numResults = (Integer) numResultsComboBox.getValue();
+        System.out.println(numResults);
+        if (query.type == QueryType.FUNCTIONS) {
             // key = "?q="+query.type.name().toLowerCase()+".name:"+query.term;
             // jbody = new JsonQueryBody().getNestedQuery(query.term, "functions", "name").toString();
-            jbody = new JsonQueryBody().getMatchQueryFilter(query.term, "name", "function").toString();
-        }else if(query.type == QueryType.CLASSES) {
+            jbody = new JsonQueryBody().getMatchQueryFilter(query.term, "name", "function", numResults).toString();
+        } else if (query.type == QueryType.CLASSES) {
             // jbody = new JsonQueryBody().getNestedQuery(query.term, "classes","name").toString();
-            jbody = new JsonQueryBody().getMatchQueryFilter(query.term, "name", "class").toString();
-        }
-        else if (query.type == QueryType.PACKAGE) {
+            jbody = new JsonQueryBody().getMatchQueryFilter(query.term, "name", "class", numResults).toString();
+        } else if (query.type == QueryType.PACKAGE) {
             // key = "?q="+query.type.name().toLowerCase()+":"+query.term;
             // jbody = new JsonQueryBody().getMatchQuery(query.term, "package").toString();
-            jbody = new JsonQueryBody().getMatchQuery(query.term, "package").toString();
+            jbody = new JsonQueryBody().getMatchQuery(query.term, "package", numResults).toString();
         }
         try {
             // Open a connection to elasticsearch and send the request, receive response.
@@ -160,10 +166,10 @@ public class Controller {
                         foundEntry.startPos = object.getInt("start_row");
                         foundEntry.endPos = object.getInt("end_row");
                         searchResults.addPostingsEntry(foundEntry);
-                    }else if (query.type == QueryType.PACKAGE){
+                    } else if (query.type == QueryType.PACKAGE) {
                         foundEntry.startPos = 0;
                         searchResults.addPostingsEntry(foundEntry);
-                    }else {
+                    } else {
                         System.err.println("error: unknown query type");
                         return searchResults;
                     }
