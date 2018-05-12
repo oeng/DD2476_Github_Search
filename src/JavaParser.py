@@ -14,7 +14,6 @@ class JavaParser:
         self.functions = []
         self.classes = []
         self.content = []
-        self.packages = []
 
     def parse_separate(self, content):
         """
@@ -29,7 +28,6 @@ class JavaParser:
         self.tree = javalang.parser.Parser(self.tokens).parse()
         self.brace_prune_pointer = 0
 
-        # print(tree.package.name)
         package_name = self.get_package_name()
         for path, node in self.tree:
             if isinstance(node, tree.ClassDeclaration):
@@ -92,6 +90,7 @@ class JavaParser:
                      'end_row': end_row, 'return_type': return_type}
                 # f = {'name': node.name, 'row': row}
                 self.functions.append(f)
+
 
     def get_package_name(self):
         """

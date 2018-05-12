@@ -115,7 +115,7 @@ public class Controller {
         String key = "";
         String jbody = "";
         Integer numResults = (Integer) numResultsComboBox.getValue();
-        System.out.println(numResults);
+        //System.out.println(numResults);
         if (query.type == QueryType.FUNCTIONS) {
             // key = "?q="+query.type.name().toLowerCase()+".name:"+query.term;
             // jbody = new JsonQueryBody().getNestedQuery(query.term, "functions", "name").toString();
@@ -126,7 +126,7 @@ public class Controller {
         } else if (query.type == QueryType.PACKAGE) {
             // key = "?q="+query.type.name().toLowerCase()+":"+query.term;
             // jbody = new JsonQueryBody().getMatchQuery(query.term, "package").toString();
-            jbody = new JsonQueryBody().getMatchQuery(query.term, "package", numResults).toString();
+            jbody = new JsonQueryBody().getPackageQuery(query.term, "package", numResults).toString();
         }
         try {
             // Open a connection to elasticsearch and send the request, receive response.
@@ -153,29 +153,52 @@ public class Controller {
             JSONObject hitsObject = jsonObject.getJSONObject("hits");
             int nrofHits = hitsObject.getInt("total");
 
-            if (nrofHits > 0) {
-                JSONArray hitsArray = hitsObject.getJSONArray("hits");
-                for (int i = 0; i < hitsArray.length(); ++i) {
-                    PostingsEntry foundEntry = new PostingsEntry();
-                    JSONObject object = hitsArray.getJSONObject(i).getJSONObject("_source");
-                    foundEntry.filename = object.getString("filename");
-                    foundEntry.filepath = object.getString("filepath");
-                    foundEntry.pkg = object.getString("package");
-                    if (query.type == QueryType.FUNCTIONS || query.type == QueryType.CLASSES) {
-                        foundEntry.name = object.getString("name");
-                        foundEntry.startPos = object.getInt("start_row");
-                        foundEntry.endPos = object.getInt("end_row");
-                        searchResults.addPostingsEntry(foundEntry);
-                    } else if (query.type == QueryType.PACKAGE) {
-                        foundEntry.startPos = 0;
-                        searchResults.addPostingsEntry(foundEntry);
-                    } else {
-                        System.err.println("error: unknown query type");
-                        return searchResults;
+            if (query.type != QueryType.PACKAGE) {
+                if (nrofHits > 0) {
+                    JSONArray hitsArray = hitsObject.getJSONArray("hits");
+                    for (int i = 0; i < hitsArray.length(); ++i) {
+                        PostingsEntry foundEntry = new PostingsEntry();
+                        JSONObject object = hitsArray.getJSONObject(i).getJSONObject("_source");
+                        foundEntry.filename = object.getString("filename");
+                        foundEntry.filepath = object.getString("filepath");
+                        foundEntry.pkg = object.getString("package");
+                        if (query.type == QueryType.FUNCTIONS || query.type == QueryType.CLASSES) {
+                            foundEntry.name = object.getString("name");
+                            foundEntry.startPos = object.getInt("start_row");
+                            foundEntry.endPos = object.getInt("end_row");
+                            searchResults.addPostingsEntry(foundEntry);
+                        } else if (query.type == QueryType.PACKAGE) {
+                            foundEntry.startPos = 0;
+                            searchResults.addPostingsEntry(foundEntry);
+                        } else {
+                            System.err.println("error: unknown query type");
+                            return searchResults;
+                        }
                     }
+                } else {
+                    System.out.println("Search returned 0 hits");
                 }
             } else {
-                System.out.println("Search returned 0 hits");
+                // Parse package response
+                int numOfDocsWithinPackagesMatchingQuery = hitsObject.getInt("total");
+                JSONArray bucketObject = jsonObject.getJSONObject("aggregations").getJSONObject("package_id").getJSONArray("buckets");
+                for (int i = 0; i < bucketObject.length(); i++) {
+                    PostingsEntry foundEntry = new PostingsEntry();
+                    JSONObject object = bucketObject.getJSONObject(i);
+                    int packageId = object.getInt("key");
+                    int numberOfDocumentsInPackage = object.getInt("doc_count");
+                    //System.out.println(packageId + " " + numberOfDocumentsInPackage);
+                    // This array should always have a single element
+                    JSONArray innerBucket = object.getJSONObject("package").getJSONArray("buckets");
+                    if(innerBucket.length() != 1) {
+                        System.err.println("error: inner bucket > 1");
+                        return searchResults;
+                    }
+                    foundEntry.filename = "";
+                    foundEntry.filepath = "";
+                    foundEntry.name = innerBucket.getJSONObject(0).getString("key");
+                    searchResults.addPostingsEntry(foundEntry);
+                }
             }
         } catch (MalformedURLException e) {
             e.printStackTrace();

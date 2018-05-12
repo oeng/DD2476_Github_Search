@@ -66,7 +66,9 @@ class IndexSettings:
             'properties': {
                 'category': {'type': 'keyword'},
                 'filepath': {'type': 'keyword'},
-                'package': {'type': 'text', "analyzer": "camel"},
+                'package': {'type': 'text', 'fielddata': 'true', 'analyzer': "camel",
+                            'fields': { 'raw': { 'type': 'keyword' }}},
+                'package_id': {'type': 'integer'},
                 'name': {'type': 'text', 'analyzer': 'camel'},
                 'start_row': {'type': 'integer'},
                 'end_row': {'type': 'integer'},
