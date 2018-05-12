@@ -41,7 +41,6 @@ public class JsonQueryBody {
             jsonPath.put("query", jsonNestedQuery);
             jsonNestedQuery.put("bool", jsonBool);
             jsonBool.put("must", matchConditions);
-            // jsonField.put("functions.name", "test");
             jsonMatch.put("match", jsonField);
             jsonField.put(nestedType + "." + nestedField, searchParameter);
             matchConditions.put(jsonMatch);
@@ -86,9 +85,6 @@ public class JsonQueryBody {
         JSONObject jsonFilter = new JSONObject();
         JSONObject jsonTerm = new JSONObject();
         JSONObject jsonMatch = new JSONObject();
-        JSONObject jsonMatchTerm = new JSONObject();
-        JSONObject jsonFilterTerm = new JSONObject();
-        JSONObject jsonName = new JSONObject();
         JSONObject jsonInnerQuery = new JSONObject();
         try {
             jsonQuery.put("query", jsonBool);

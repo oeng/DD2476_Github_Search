@@ -11,6 +11,26 @@ class IndexSettings:
             }
         }
     }
+
+    analyzer_pattern_capture = {
+        'analysis': {
+            'analyzer': {
+                'camel': {
+                    'tokenizer': 'pattern',
+                    'filter': ['camel_pattern', 'lowercase']
+                }
+            },
+            'filter': {
+                'camel_pattern': {
+                    'type': 'pattern_capture',
+                    "preserve_original": True,
+                    'patterns': ["(\\p{Ll}+|\\p{Lu}\\p{Ll}+|\\p{Lu}+)",
+                                 "(\\d+)"]
+                }
+            }
+        }
+    }
+
     mappings = {'mappings': {
         'java': {
                 'properties': {
@@ -55,5 +75,5 @@ class IndexSettings:
     }
     settings['settings'] = analyzer
     settings['mapping'] = mappings
-    settings_separate['settings'] = analyzer
+    settings_separate['settings'] = analyzer_pattern_capture
     settings_separate['mappings'] = mappings_separate
