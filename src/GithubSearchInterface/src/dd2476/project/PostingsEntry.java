@@ -8,6 +8,9 @@ class PostingsEntry {
     String name;
     int startPos;
     int endPos;
+    int packageId = -1;
+    int docsInPackage = -1;
+
     public String toString() {
         return (pkg + " " + filename + " " + name);
     }

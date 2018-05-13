@@ -4,6 +4,7 @@ from collections import namedtuple
 import javalang
 from javalang import tree
 
+import time
 
 class JavaParser:
     def __init__(self):
@@ -22,9 +23,11 @@ class JavaParser:
         could not be parsed
         param content: Java file content
         """
-        self.tokens = list(javalang.tokenizer.tokenize(content))
-        self.tree = javalang.parse.parse(content)
-        # print(tree.package.name)
+        tokenizer_result = javalang.tokenizer.tokenize(content)
+        self.tokens = list(tokenizer_result)
+        self.tree = javalang.parser.Parser(self.tokens).parse()
+        self.brace_prune_pointer = 0
+
         package_name = self.get_package_name()
         for path, node in self.tree:
             if isinstance(node, tree.ClassDeclaration):
@@ -88,6 +91,7 @@ class JavaParser:
                 # f = {'name': node.name, 'row': row}
                 self.functions.append(f)
 
+
     def get_package_name(self):
         """
         :return: File package name
@@ -130,9 +134,16 @@ class JavaParser:
         """
         balance = 0
         line = -1
-        for token in self.tokens:
+        prune_index_found = False
+        for i in range(self.brace_prune_pointer, len(self.tokens)):
+            token = self.tokens[i]
             line = token.position[0]
             if line >= start_row:
+                # store list index for pruning
+                if not prune_index_found:
+                    self.brace_prune_pointer = i
+                    prune_index_found = True
+
                 if token.__class__.__name__ == 'Separator' and token.value == '{':
                     balance += 1
                 if token.__class__.__name__ == 'Separator' and token.value == '}':
@@ -148,12 +159,21 @@ class JavaParser:
 
 
 def test():
+    i = 0
+    parser = JavaParser()
+
+    t0 = time.time()
     for filepath in glob.iglob('download_repo/**/*.java', recursive=True):
         with open(filepath, 'r') as f:
             content = f.read()
-        parser = JavaParser(content)
-        print(parser.get_functions())
+        parser.parse_separate(content)
+        i += 1
+        if i == 1000:
+            break
+    t1 = time.time()
 
+    print("Items in content: %d", len(content))
+    print("time : %d", t1-t0)
 
 if __name__ == '__main__':
     test()
