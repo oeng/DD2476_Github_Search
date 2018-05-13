@@ -1,3 +1,33 @@
+class RelevanceScoringSettings:
+    index_used = 'test'
+    host = 'http://localhost:9200'
+    category = 'function'
+    folder = 'relevance_scoring_results'
+    # The search settings to be evaluated
+    search_body = {
+        "query": {
+            "bool": {
+                "filter": [
+                    {"term": {
+                        "category": ""
+                    }
+                    }
+                ],
+                "must": [
+                    {
+                        "match": {
+                            "name": {
+                                "query": ""
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        "from": 0, "size": 5,
+    }
+
+
 class IndexSettings:
     settings = {}
     settings_separate = {}
@@ -67,7 +97,7 @@ class IndexSettings:
                 'category': {'type': 'keyword'},
                 'filepath': {'type': 'keyword'},
                 'package': {'type': 'text', 'fielddata': 'true', 'analyzer': "camel",
-                            'fields': { 'raw': { 'type': 'keyword' }}},
+                            'fields': {'raw': {'type': 'keyword'}}},
                 'package_id': {'type': 'integer'},
                 'name': {'type': 'text', 'analyzer': 'camel'},
                 'start_row': {'type': 'integer'},
