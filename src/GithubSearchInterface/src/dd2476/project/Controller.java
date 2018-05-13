@@ -51,7 +51,7 @@ public class Controller {
             PostingsEntry clickedEntry = resultsListView.getSelectionModel().getSelectedItem();
             if (clickedEntry != null) {
                 // Show detailed information to user
-                if(clickedEntry.packageId > 0)
+                if(clickedEntry.packageId < 0)
                     openResultEntry(clickedEntry);
             }
         });
