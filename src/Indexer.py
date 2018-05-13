@@ -54,15 +54,15 @@ class Indexer:
         """
         analyzer = Analyzer()
         # https://elasticsearch-py.readthedocs.io/en/master/helpers.html?highlight=bulk
-        deque(helpers.parallel_bulk(
+        for success, info in helpers.parallel_bulk(
             self.es,
             # analyzer.get_analyzed_file(),
             analyzer.get_analyzed_file_separate(),
             thread_count=4,
             index=self.index_to_use,
-            doc_type='java',
-            chunk_size=50
-        ))
+            doc_type='java', chunk_size=50):
+            if not success:
+                print(info)
         # for d in analyzer.get_analyzed_file():
         # self.index_document(d)
 

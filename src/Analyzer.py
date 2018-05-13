@@ -57,8 +57,10 @@ class Analyzer:
             # Create data strucure for elastic search here directly
             # Nested representation is handled automatically by elastic search
             # https://www.elastic.co/guide/en/elasticsearch/reference/current/nested.html
-            for doc in parser.get_content():
+            for num, doc in enumerate(parser.get_content()):
+                doc_id = filepath+ '/'  + str(num)
                 d = {
+                    '_id':doc_id,
                     'filename': filename,
                     'filepath': filepath,
                     'category': doc.get('category'),
