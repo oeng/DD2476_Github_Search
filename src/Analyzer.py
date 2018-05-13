@@ -6,9 +6,10 @@ import sys
 import io
 
 import javalang
+import hashlib
+import base64
 
 from src.JavaParser import JavaParser
-# from JavaParser import JavaParser
 
 
 def test():
@@ -58,7 +59,9 @@ class Analyzer:
             # Nested representation is handled automatically by elastic search
             # https://www.elastic.co/guide/en/elasticsearch/reference/current/nested.html
             for num, doc in enumerate(parser.get_content()):
-                doc_id = filepath+ '/'  + str(num)
+                doc_id = filepath+str(num)
+                doc_id = hashlib.md5(str.encode(doc_id)).digest()
+                doc_id = base64.urlsafe_b64encode(doc_id).decode('utf-8')
                 d = {
                     '_id':doc_id,
                     'filename': filename,
