@@ -51,7 +51,8 @@ public class Controller {
             PostingsEntry clickedEntry = resultsListView.getSelectionModel().getSelectedItem();
             if (clickedEntry != null) {
                 // Show detailed information to user
-                openResultEntry(clickedEntry);
+                if(clickedEntry.packageId > 0)
+                    openResultEntry(clickedEntry);
             }
         });
     }
@@ -70,7 +71,6 @@ public class Controller {
         detailsWindow.setScene(detailsScene);
         detailsWindow.setTitle("Showing result found in: " + entry.getRepo());
 
-        // TODO: Använd radnummer istället för absolutpositioner
         String newLineSymbol = System.getProperty("line.separator");
         int lineNumber = 0;
         int startPos = 0;
@@ -88,6 +88,9 @@ public class Controller {
                 //if (lineNumber < entry.startPos) {
                 //    endPos += line.getBytes().length;
                 //}
+
+                // Quickfix for displaying package result
+
                 codeArea.appendText(String.format("%4d", lineNumber) + "   " + line + newLineSymbol);
                 if (lineNumber >= entry.startPos - 1 && lineNumber <= entry.endPos - 1) {
                     codeArea.setParagraphStyle(lineNumber, "-fx-background-color: #c8ccd0;");
@@ -185,8 +188,6 @@ public class Controller {
                 for (int i = 0; i < bucketObject.length(); i++) {
                     PostingsEntry foundEntry = new PostingsEntry();
                     JSONObject object = bucketObject.getJSONObject(i);
-                    int packageId = object.getInt("key");
-                    int numberOfDocumentsInPackage = object.getInt("doc_count");
                     //System.out.println(packageId + " " + numberOfDocumentsInPackage);
                     // This array should always have a single element
                     JSONArray innerBucket = object.getJSONObject("package").getJSONArray("buckets");
@@ -196,7 +197,11 @@ public class Controller {
                     }
                     foundEntry.filename = "";
                     foundEntry.filepath = "";
-                    foundEntry.name = innerBucket.getJSONObject(0).getString("key");
+                    foundEntry.numberOfDocumentsInPackage = innerBucket.getJSONObject(0).getInt("doc_count");
+                    // Quickfix
+                    foundEntry.name = "#docs" + Integer.toString(foundEntry.numberOfDocumentsInPackage);
+                    foundEntry.packageId = object.getInt("key");
+                    foundEntry.pkg = innerBucket.getJSONObject(0).getString("key");
                     searchResults.addPostingsEntry(foundEntry);
                 }
             }

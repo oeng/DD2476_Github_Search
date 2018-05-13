@@ -138,6 +138,7 @@ public class JsonQueryBody {
             jsonAggs1.put("package_id", jsonPackageId);
             jsonPackageId.put("terms", jsonPackageIdField);
             jsonPackageIdField.put("field", "package_id");
+            jsonPackageIdField.put("size", numResults);
             jsonPackageId.put("aggs", jsonAggs2);
             jsonAggs2.put("package", jsonPackageTerms);
             jsonPackageTerms.put("terms", jsonPackageField);
