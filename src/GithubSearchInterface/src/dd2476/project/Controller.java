@@ -189,7 +189,7 @@ public class Controller {
                     foundEntry.filepath = "";
                     foundEntry.docsInPackage = innerBucket.getJSONObject(0).getInt("doc_count");
                     // Quickfix
-                    foundEntry.name = "#docs" + Integer.toString(foundEntry.numberOfDocumentsInPackage);
+                    foundEntry.name = "#docs" + Integer.toString(foundEntry.docsInPackage);
                     foundEntry.packageId = object.getInt("key");
                     foundEntry.pkg = innerBucket.getJSONObject(0).getString("key");
                     searchResults.addPostingsEntry(foundEntry);
