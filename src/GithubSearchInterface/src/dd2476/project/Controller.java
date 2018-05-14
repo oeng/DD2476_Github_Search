@@ -244,9 +244,13 @@ public class Controller {
     }
     public void onSelectClassSearch(ActionEvent e) {
         returnTypeCheckbox.setDisable(true);
+        returnTypeField.setDisable(true);
+        returnTypeCheckbox.setSelected(false);
     }
     public void onSelectPackageSearch(ActionEvent e) {
         returnTypeCheckbox.setDisable(true);
+        returnTypeField.setDisable(true);
+        returnTypeCheckbox.setSelected(false);
     }
 
     public void onEnter(ActionEvent e) {
