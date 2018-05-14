@@ -15,14 +15,15 @@ class Evaluater:
         relevance_request_body = {}
         relevance_request_body["requests"] = []
         for filename in os.listdir(folder):
+            evaluate_body = {}
             with open(os.path.join(folder, filename), "r") as f:
                 content = f.readlines()
-                request_body = self.get_request_body(filename)
-                ratings_body = self.get_ratings_body(content)
-                request_body["ratings"] = ratings_body
-                relevance_request_body["requests"].append(request_body)
-        relevance_request_body['metric'] = RelevanceScoringSettings.metric
-        url = RelevanceScoringSettings.host+"/" + \
+            evaluate_body["request"] = self.get_request_body(filename)
+            evaluate_body["ratings"] = self.get_ratings_body(content)
+            evaluate_body["id"] = filename + " " + "match"
+            relevance_request_body["requests"].append(evaluate_body)
+        relevance_request_body["metric"] = RelevanceScoringSettings.metric
+        url = RelevanceScoringSettings.host + "/" + \
             RelevanceScoringSettings.index_used + "/_rank_eval"
         response = requests.post(
             url, json=relevance_request_body)
@@ -31,20 +32,25 @@ class Evaluater:
 
     def handle_response(self, response):
         # TODO: Implement how we want to handle data
-        print(response['quality_level'])
+        folder = RelevanceScoringSettings.evaluation_result_folder
+        json_filename = RelevanceScoringSettings.response_json
+        if not os.path.exists(folder):
+            os.makedirs(folder)
+        path = os.path.join(folder, json_filename)
+        with open(path, "w") as f:
+            f.write(json.dumps(response))
+
     def get_request_body(self, filename):
         """
         :return dict, the request used for relevance scoring
         """
-        query_template = RelevanceScoringSettings.search_body
+        query_template = {"query": {"bool": {"filter": [
+            {"term": {"category": ""}}], "must": [{"match": {"name": {"query": ""}}}]}}, }
+
         query_template["query"]["bool"]["filter"][0]["term"]["category"] = \
             RelevanceScoringSettings.category
-        query_template["query"]["bool"]["must"][0]["match"]["name"]["query"] = \
-            filename
-        request = {}
-        request["id"] = filename + " " + "match"
-        request["request"] = query_template
-        return request
+        query_template["query"]["bool"]["must"][0]["match"]["name"]["query"] = filename
+        return query_template
 
     def get_ratings_body(self, content):
         """
@@ -59,12 +65,6 @@ class Evaluater:
             ratings.append(
                 {"_index": RelevanceScoringSettings.index_used, "_id": doc_id, "rating": rating})
         return ratings
-
-    def get_evaluated(self):
-        """
-        :return array of evaluated search terms
-        """
-        return ""
 
 
 if __name__ == "__main__":

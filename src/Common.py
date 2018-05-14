@@ -2,8 +2,10 @@ class RelevanceScoringSettings:
     index_used = "test"
     host = "http://localhost:9200"
     category = "function"
+    response_json = 'response.json'
     folder = "relevance_scoring_results"
-    num_to_score = 10
+    evaluation_result_folder = "evaluation_results"
+    num_to_score = 50
     # The search settings to be evaluated
     search_body = {
         "query": {
@@ -46,7 +48,7 @@ class RelevanceScoringSettings:
     # TODO: Implement more performance evaluations
     metric = {
         "precision": {
-            "k": 20,
+            "k": num_to_score,
             "relevant_rating_threshold": 1,
             "ignore_unlabeled": "false"
         }

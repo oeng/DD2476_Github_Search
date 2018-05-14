@@ -1,0 +1,824 @@
+{
+    "quality_level": 0.55,
+    "details": {
+        "quick sort match": {
+            "quality_level": 0.5,
+            "unknown_docs": [],
+            "hits": [{
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "B7nYUii_vvKWD_K2VUMpwg==",
+                    "_score": 21.190208
+                },
+                "rating": 3
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "LU6u0z54HRCRfT-35_M29A==",
+                    "_score": 21.190208
+                },
+                "rating": 2
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "yXAFFbv8moXF7Y0mYuRdAQ==",
+                    "_score": 21.190208
+                },
+                "rating": 3
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "sltLrS0xP2kuiiuGcjk4Dg==",
+                    "_score": 21.026207
+                },
+                "rating": 2
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "9zm3K9jLUGXzdQVvKCo1Ig==",
+                    "_score": 21.026207
+                },
+                "rating": 3
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "6sKIQLy3OTBPxFWURBYevw==",
+                    "_score": 21.00072
+                },
+                "rating": 1
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "-X63iFGBjq7PnyLLa6jLWg==",
+                    "_score": 21.00072
+                },
+                "rating": 3
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "7BOey5C306ZBiDPitKfd3w==",
+                    "_score": 21.00072
+                },
+                "rating": 3
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "QyIIX1hTFPDeNCj5snbLnA==",
+                    "_score": 21.00072
+                },
+                "rating": 3
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "VEGsaJIl7Ab_EyA_6iVaEA==",
+                    "_score": 21.00072
+                },
+                "rating": 3
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "0YaW7fxDkV4JugPTPCQ_-g==",
+                    "_score": 21.00072
+                },
+                "rating": 3
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "t4OJ2H5tvMzbDwe3281BAw==",
+                    "_score": 20.995407
+                },
+                "rating": 3
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "XyJXq18T0Vfzi_PWuN9p_Q==",
+                    "_score": 20.995407
+                },
+                "rating": 3
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "8AaUlWiHVTJThuGRyL_tBg==",
+                    "_score": 20.995407
+                },
+                "rating": 3
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "F-_OFtugdJ18AhdDT8Su_Q==",
+                    "_score": 20.995407
+                },
+                "rating": 3
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "e9RZQQ8XDVKFkppMmmL8kA==",
+                    "_score": 20.995407
+                },
+                "rating": 1
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "9yyFfRwrccDzhIiznvv9-w==",
+                    "_score": 20.995407
+                },
+                "rating": 3
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "fgrgLdfVVG1_vcW-EmSWGA==",
+                    "_score": 20.995407
+                },
+                "rating": 3
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "cJZaEFeZqTvkXlcwTphMmQ==",
+                    "_score": 20.995407
+                },
+                "rating": 3
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "4Z1oLhGK62pdjGiDcmG3YA==",
+                    "_score": 20.995407
+                },
+                "rating": 3
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "fB4jpoaJ7aAJZQLaKgkL4w==",
+                    "_score": 20.893646
+                },
+                "rating": 3
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "xNFXgVkXKbpB1HnAuV9rAQ==",
+                    "_score": 20.893646
+                },
+                "rating": 3
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "uEmPHdjqp99T6Zvd8X-F_Q==",
+                    "_score": 20.893646
+                },
+                "rating": 3
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "oTP7T_ADcmPYC2ONWH0gjw==",
+                    "_score": 20.893646
+                },
+                "rating": 3
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "U4KCUDZLaifsnwNttG5dsg==",
+                    "_score": 11.698345
+                },
+                "rating": 0
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "4s9d3E0crHDmB3R0HG6uyA==",
+                    "_score": 11.680342
+                },
+                "rating": 0
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "kVUNniTV_BCW2J1sOIGKmQ==",
+                    "_score": 11.680342
+                },
+                "rating": 0
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "p2DOedwurjqdqdlPEwIZrQ==",
+                    "_score": 11.680342
+                },
+                "rating": 0
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "JituKqLSChQXXcDTG5n2yg==",
+                    "_score": 11.670857
+                },
+                "rating": 0
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "28NhD2ui28UcZo0PbIJ22w==",
+                    "_score": 11.670857
+                },
+                "rating": 1
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "raDRp2S1rHzU6Ckugce2rw==",
+                    "_score": 11.645903
+                },
+                "rating": 0
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "Iy9PQyJDHu7N8U431-Q6uQ==",
+                    "_score": 11.645903
+                },
+                "rating": 0
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "qPfnsdv30omOpnu4XDbeuQ==",
+                    "_score": 11.645903
+                },
+                "rating": 0
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "EVhP7HBAGVqNTm_5Kq90Ag==",
+                    "_score": 11.645903
+                },
+                "rating": 0
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "pDuNBoBBeiaWNYNEslC6lw==",
+                    "_score": 11.644425
+                },
+                "rating": 0
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "Xp8otgvq-YU8Q15_A0u6gQ==",
+                    "_score": 11.644425
+                },
+                "rating": 0
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "lrOPDoQlyTTh6KnCRv5HCQ==",
+                    "_score": 11.644425
+                },
+                "rating": 0
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "_v2blGN9qtSYps6gwrTNGQ==",
+                    "_score": 11.569516
+                },
+                "rating": 0
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "_kH1tm0nyOKz8Zmo9ZNu4Q==",
+                    "_score": 11.569516
+                },
+                "rating": 0
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "j5oAggEDvvyNhNuXhoT1wg==",
+                    "_score": 11.569516
+                },
+                "rating": 0
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "0NV8R0P7JAgZnvMueqw1bA==",
+                    "_score": 11.569516
+                },
+                "rating": 0
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "7tGaRqhDp5avzGcj7_gLWQ==",
+                    "_score": 11.569516
+                },
+                "rating": 0
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "xqCzbeCJ_BULAcWFYEYa3g==",
+                    "_score": 11.569516
+                },
+                "rating": 0
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "xzTAuX14MiGWXflvEUfKjg==",
+                    "_score": 11.569516
+                },
+                "rating": 0
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "SbHYxW7zhzHmYQUT5HBhvA==",
+                    "_score": 11.569516
+                },
+                "rating": 0
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "fuuvMWsTJxxe3DE1sNBU5g==",
+                    "_score": 11.569516
+                },
+                "rating": 0
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "xf_4brx_fZPzAnv1k7awZg==",
+                    "_score": 11.569516
+                },
+                "rating": 0
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "EjzLCuETtroa9ZWdLu5WRg==",
+                    "_score": 11.569516
+                },
+                "rating": 0
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "VhpsjP1PlmZxhIVvGzazcQ==",
+                    "_score": 11.569516
+                },
+                "rating": 0
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "ILc8knwqrlmRtbiB9AAuew==",
+                    "_score": 11.569516
+                },
+                "rating": 0
+            }],
+            "metric_details": {
+                "relevant_docs_retrieved": 25,
+                "docs_retrieved": 50
+            }
+        },
+        "read file match": {
+            "quality_level": 0.6,
+            "unknown_docs": [],
+            "hits": [{
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "gJnqZvwBTmxSYmUgT_QnPQ==",
+                    "_score": 14.377916
+                },
+                "rating": 0
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "MVkpzaUcOas1ZH5PKe6YSg==",
+                    "_score": 14.377916
+                },
+                "rating": 2
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "-MsHogMdONzebENidYgCWw==",
+                    "_score": 14.377916
+                },
+                "rating": 1
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "1OHypfIhtDQ8K3IW7qHk-Q==",
+                    "_score": 14.361166
+                },
+                "rating": 0
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "n4s8GZlsY_5QmgATP02Yeg==",
+                    "_score": 14.343551
+                },
+                "rating": 0
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "En3l9kSQd0_g7u-aBm7S6g==",
+                    "_score": 14.343551
+                },
+                "rating": 0
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "v3qoBaOySqVXV91ML3pjTw==",
+                    "_score": 14.343551
+                },
+                "rating": 0
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "pxeh5drr_kM2DGohqangBw==",
+                    "_score": 14.343551
+                },
+                "rating": 1
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "S56-F7IuP-Och332rAy8IQ==",
+                    "_score": 14.337737
+                },
+                "rating": 1
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "FqjDYc5DAQc-T6oqTWt65A==",
+                    "_score": 14.337737
+                },
+                "rating": 0
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "vXxMEFwX0FpSrjHUBm27fw==",
+                    "_score": 14.337737
+                },
+                "rating": 1
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "YCbpgSrN4OO41xSYNPQK0g==",
+                    "_score": 14.337737
+                },
+                "rating": 1
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "0RlDWo4eARtEy3YnVKI-GQ==",
+                    "_score": 14.33639
+                },
+                "rating": 1
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "3rghozIZdGstNWlrWdxIXA==",
+                    "_score": 14.33639
+                },
+                "rating": 1
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "DEtACaK4SzJ5C5NV9LN8ww==",
+                    "_score": 14.33639
+                },
+                "rating": 0
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "69rKpyFn2Oqk14VctP0NwA==",
+                    "_score": 14.33639
+                },
+                "rating": 0
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "MyKhMjU5t1QY_a_LRSAVlg==",
+                    "_score": 14.3353195
+                },
+                "rating": 2
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "rRNLKAJckwGlOzYr6UQHlA==",
+                    "_score": 14.3353195
+                },
+                "rating": 0
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "nFCSVrnhzowr95EvIo2FOQ==",
+                    "_score": 14.3353195
+                },
+                "rating": 0
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "KKQab7EXj-qc9lbVvX0OPA==",
+                    "_score": 13.000846
+                },
+                "rating": 3
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "VSC0Ld60K54Ws2F4AUL3Bg==",
+                    "_score": 13.000846
+                },
+                "rating": 3
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "djOv8dfXkFjKoRD8ge5jdA==",
+                    "_score": 13.000846
+                },
+                "rating": 3
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "njrJVbXsJzlJCJ2H_YaUaw==",
+                    "_score": 13.000846
+                },
+                "rating": 3
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "tUA2Z7IFnP3qqZu_gl0kcQ==",
+                    "_score": 13.000846
+                },
+                "rating": 0
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "NG4ro3sn-rTaY08YELVKjQ==",
+                    "_score": 13.000846
+                },
+                "rating": 3
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "jF6a5QGBMiEck61XeKszfw==",
+                    "_score": 13.000846
+                },
+                "rating": 1
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "KLTKVmoTFHw-MKWk-0jNew==",
+                    "_score": 13.000846
+                },
+                "rating": 2
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "2bwE9FJNGfyTy8T1uFAhFQ==",
+                    "_score": 13.000846
+                },
+                "rating": 3
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "qyB3yLiBykevVwcuDX35nQ==",
+                    "_score": 13.000846
+                },
+                "rating": 2
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "qF9nCDQbdfSmFu1Lhb-_Kg==",
+                    "_score": 13.000846
+                },
+                "rating": 3
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "jhBVgv1W4aC3-FaRLdE1oQ==",
+                    "_score": 13.000846
+                },
+                "rating": 3
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "yZN9xpxdUntgxgKiF8JNnw==",
+                    "_score": 13.000846
+                },
+                "rating": 3
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "Z1x5MMdN_g5Afv6O6kJkXg==",
+                    "_score": 13.000846
+                },
+                "rating": 0
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "zUygjUD1CbTwf0U03oqDvQ==",
+                    "_score": 13.000846
+                },
+                "rating": 3
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "WcOh1Dk0pkSFgLX5xp0b5w==",
+                    "_score": 13.000846
+                },
+                "rating": 3
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "Rz3Q1jPNOEY9vdbuH6I_yQ==",
+                    "_score": 13.000846
+                },
+                "rating": 0
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "J5_30JARxsrh5OH4bQYD2g==",
+                    "_score": 13.000846
+                },
+                "rating": 0
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "DOMI2wjpin9LfpMyPKvw3A==",
+                    "_score": 13.000846
+                },
+                "rating": 2
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "Jh-bxIc43OREx-J3OIF--Q==",
+                    "_score": 13.000846
+                },
+                "rating": 0
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "XSZm1K60hSsksCWce0_M6A==",
+                    "_score": 13.000846
+                },
+                "rating": 1
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "jy2KZbCTemPSd6kj7F1bGQ==",
+                    "_score": 13.000846
+                },
+                "rating": 1
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "0ZfcrsCGHexHUduu9dmd_Q==",
+                    "_score": 13.000846
+                },
+                "rating": 1
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "Pp4GpVP0zpjB0y-vh4AaGA==",
+                    "_score": 13.000846
+                },
+                "rating": 1
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "MUJbaomFRN0KiPGCdBFISg==",
+                    "_score": 13.000846
+                },
+                "rating": 1
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "6PWCT0l68_01SAKe5qAMxw==",
+                    "_score": 13.000846
+                },
+                "rating": 0
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "PAZTv5DWLK-WN1MTqL2_XA==",
+                    "_score": 13.000846
+                },
+                "rating": 0
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "JD8bOzuRGyZiNKN5z-V2CQ==",
+                    "_score": 13.000846
+                },
+                "rating": 0
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "n1QBOsRvrNF_U-5BbebXsQ==",
+                    "_score": 13.000846
+                },
+                "rating": 3
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "laqEiSGgL2nAqCKL2D81mw==",
+                    "_score": 13.000846
+                },
+                "rating": 0
+            }, {
+                "hit": {
+                    "_index": "test",
+                    "_type": "java",
+                    "_id": "FlXWo1K1L-F1GFvnQQkHWw==",
+                    "_score": 13.000846
+                },
+                "rating": 0
+            }],
+            "metric_details": {
+                "relevant_docs_retrieved": 30,
+                "docs_retrieved": 50
+            }
+        }
+    },
+    "failures": {}
+}
