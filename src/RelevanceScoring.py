@@ -13,21 +13,21 @@ class RelevanceScoring:
         """
         Run relevance interface
         """
-        search_string = input('Search string to evaluate: ')
+        search_string = input("Search string to evaluate: ")
         search_result = self.get_search_results(search_string)
         scored = []
         num_scored = 1
-        results = search_result['hits']['hits']
+        results = search_result["hits"]["hits"]
         for res in results:
-            content = res['_source']
-            doc_id = res['_id']
-            filepath = content['filepath']
-            start = content['start_row']
-            end = content['end_row']
+            content = res["_source"]
+            doc_id = res["_id"]
+            filepath = content["filepath"]
+            start = content["start_row"]
+            end = content["end_row"]
             print(filepath)
             print(start, end)
             document_content = self.get_document_content(filepath, start, end)
-            print('-'*100)
+            print("-"*100)
             print(document_content)
             relevance_scoring = input("Relevance Scoring: {} of {}\
                                       \n0 Not Relevant\
@@ -35,7 +35,7 @@ class RelevanceScoring:
                                       \n2 Fairly Relevant\
                                       \n3 Highly Relevant\n:".format(num_scored, len(results)))
             scored.append(doc_id+","+relevance_scoring+"\n")
-            num_scored+=1
+            num_scored += 1
         self.save_data(scored, search_string)
 
     def save_data(self, scored, search_string):
@@ -46,7 +46,7 @@ class RelevanceScoring:
         if not os.path.exists(folder):
             os.makedirs(folder)
         filepath = os.path.join(folder, search_string)
-        with open(filepath, 'w') as f:
+        with open(filepath, "w") as f:
             f.writelines(scored)
 
     def get_document_content(self, filepath, start, end):
@@ -77,12 +77,14 @@ class RelevanceScoring:
         :return dict (json body)
         """
         json_template = RelevanceScoringSettings.search_body
-        json_template['query']['bool']['filter'][0]['term']['category'] = \
+        json_template["query"]["bool"]["filter"][0]["term"]["category"] = \
             RelevanceScoringSettings.category
-        json_template['query']['bool']['must'][0]['match']['name']['query'] = \
+        json_template["query"]["bool"]["must"][0]["match"]["name"]["query"] = \
             search_term
+        json_template["from"] = 0
+        json_template["size"] = RelevanceScoringSettings.num_to_score
         return json_template
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     rs = RelevanceScoring()
