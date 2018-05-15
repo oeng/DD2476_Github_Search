@@ -36,13 +36,13 @@ class RelevanceScoring:
                                       \n3 Highly Relevant\n:".format(num_scored, len(results)))
             scored.append(doc_id+","+relevance_scoring+"\n")
             num_scored += 1
-        self.save_data(scored, search_string)
+            self.save_data(scored, search_string)
 
     def save_data(self, scored, search_string):
         """
         Saves the relevance scoring and id to file as csv
         """
-        folder = RelevanceScoringSettings.folder
+        folder = RelevanceScoringSettings.relevance_scoring_folder
         if not os.path.exists(folder):
             os.makedirs(folder)
         filepath = os.path.join(folder, search_string)

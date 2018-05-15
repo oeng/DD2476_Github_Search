@@ -1,10 +1,16 @@
+import os
+
+
 class RelevanceScoringSettings:
     index_used = "test"
     host = "http://localhost:9200"
     category = "function"
-    response_json = 'response.json'
-    folder = "relevance_scoring_results"
+    response_json = 'evaluation_response.json'
     evaluation_result_folder = "evaluation_results"
+    relevance_scoring_folder = os.path.join(
+        evaluation_result_folder, "relevance_scoring_results")
+    plot_folder = os.path.join(evaluation_result_folder, "plots")
+    relevant_rating_threshold = 1
     num_to_score = 50
     # The search settings to be evaluated
     search_body = {
@@ -49,7 +55,7 @@ class RelevanceScoringSettings:
     metric = {
         "precision": {
             "k": num_to_score,
-            "relevant_rating_threshold": 1,
+            "relevant_rating_threshold": relevant_rating_threshold,
             "ignore_unlabeled": "false"
         }
     }
