@@ -8,7 +8,7 @@ Python 3 is used. Source files in src/
 `python -m src.Crawler`
 `python -m src.Indexer`
 
-### To evaluate
+### To evaluate
 First run RelevanceScoring.py to manually rank documents with:
 `python -m src.RelevanceScoring`
 
