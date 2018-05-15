@@ -15,7 +15,7 @@ First run RelevanceScoring.py to manually rank documents with:
 
 Enter the search phrase, eg "quick sort" to be evaluated and then manually rank the documents based upon percieved relevance. 
 
-The results will be saved in the folder where the filename is the search phrase entered `evaluation_results/relevance_scoring_results/`, in the format:`DOC_ID,RANK`. 
+The results will be saved in the folder `evaluation_results/relevance_scoring_results/`, in the format:`DOC_ID,RANK`. 
 
 To use elasticsearch to use the relevance scores for evaluation run:
 
