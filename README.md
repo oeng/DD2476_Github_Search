@@ -10,6 +10,7 @@ Python 3 is used. Source files in src/
 
 ### To evaluate
 First run RelevanceScoring.py to manually rank documents with:
+
 `python -m src.RelevanceScoring`
 
 Enter the search term to be evaluated and then manually rank the documents based upon percieved relevance. 
@@ -17,6 +18,7 @@ Enter the search term to be evaluated and then manually rank the documents based
 The results will be saved in the folder where the filename is the search phrase entered `evaluation_results/relevance_scoring_results/`, in the format:`DOC_ID,RANK`. 
 
 To use elasticsearch to use the relevance scores for evaluation run:
+
 `python -m src.Evaluater`
 
 This will read the file content of `./evaluation_results/relevance_scoring_results/` and save the json response to `evaluation_results/`
