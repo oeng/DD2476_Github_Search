@@ -13,7 +13,7 @@ First run RelevanceScoring.py to manually rank documents with:
 
 `python -m src.RelevanceScoring`
 
-Enter the search term to be evaluated and then manually rank the documents based upon percieved relevance. 
+Enter the search phrase, eg "quick sort" to be evaluated and then manually rank the documents based upon percieved relevance. 
 
 The results will be saved in the folder where the filename is the search phrase entered `evaluation_results/relevance_scoring_results/`, in the format:`DOC_ID,RANK`. 
 
