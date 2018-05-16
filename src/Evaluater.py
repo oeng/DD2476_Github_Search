@@ -18,18 +18,20 @@ class Evaluater:
         self.metric = RelevanceScoringSettings.metric
         self.relevant_rating_threshold = RelevanceScoringSettings.relevant_rating_threshold
         self.plot_folder = RelevanceScoringSettings.plot_folder
+        self.relevant_documents = 100
 
     def run(self):
         relevance_request_body = {}
         relevance_request_body["requests"] = []
         for filename in os.listdir(self.relevance_scoring_folder):
             evaluate_body = {}
-            with open(os.path.join(self.relevance_scoring_folder, filename), "r") as f:
-                content = f.readlines()
-            evaluate_body["request"] = self.get_request_body(filename)
-            evaluate_body["ratings"] = self.get_ratings_body(content)
-            evaluate_body["id"] = filename
-            relevance_request_body["requests"].append(evaluate_body)
+            if not filename.startswith("."):
+                with open(os.path.join(self.relevance_scoring_folder, filename), "r") as f:
+                    content = f.readlines()
+                evaluate_body["request"] = self.get_request_body(filename)
+                evaluate_body["ratings"] = self.get_ratings_body(content)
+                evaluate_body["id"] = filename
+                relevance_request_body["requests"].append(evaluate_body)
         relevance_request_body["metric"] = self.metric
         url = self.host + "/" + \
             self.index_used + "/_rank_eval"
@@ -39,7 +41,6 @@ class Evaluater:
         self.handle_response(response_json)
 
     def handle_response(self, response):
-        # TODO: Implement how we want to handle data
         json_filename = self.response_json
         if not os.path.exists(self.evaluation_folder):
             os.makedirs(self.evaluation_folder)
@@ -80,10 +81,10 @@ class Evaluater:
         json_path = os.path.join(self.evaluation_folder, self.response_json)
         with open(json_path, 'r') as f:
             result = json.loads(f.read())
-        results = self.get_precision(result)
-        self.plot_precision(results)
+        results = self.get_precision_recall(result)
+        self.plot_precision_recall(results)
 
-    def get_precision(self, json_result):
+    def get_precision_recall(self, json_result):
         """
         Calculates the precision from the json_result file
         :param json_result with return json from elasticsearch
@@ -92,40 +93,75 @@ class Evaluater:
         results = {}
         # quality_level = json_result['quality_level']
         for key, val in json_result['details'].items():
-            # relevant_docs_retrieved = val['metric_details']['relevant_docs_retrieved']
-            # docs_retrieved = val['metric_details']['docs_retrieved']
-            sum_relevant = 0
+            true_positives = 0
             precision_results = []
+            recall_results = []
             for i, hit in enumerate(val['hits']):
                 # print(hit['rating'])
                 rating = hit['rating']
                 if rating is None:
-                    results[key] = precision_results
+                    results[key] = {
+                        'precision': precision_results, 'recall': recall_results}
                     break
                 elif(rating > self.relevant_rating_threshold):
-                    sum_relevant += 1
-                if i % 10 == 9 and i != 0:
-                    precision_results.append(sum_relevant/float(i+1))
+                    true_positives += 1
+                results[key] = {
+                    'precision': precision_results, 'recall': recall_results}
+                recall_results.append(
+                    true_positives/(float(self.relevant_documents)))
+                precision_results.append(true_positives/float(i+1))
         return results
 
-    def plot_precision(self, results):
+    def plot_precision_recall(self, results):
         """
-        Saves the figures to file
-        :param results dict filenames as keys containing arrays of precision
+        Saves the fig_pures to file
+        :param results dict filenames as keys containing arrays of precision and recall
         """
         filetype = "pdf"
         if not os.path.exists(self.plot_folder):
             os.makedirs(self.plot_folder)
         for key, val in results.items():
+            filename = key+"_plot_precision."+filetype
             plot_path = os.path.join(
-                self.plot_folder, key+"_plot."+filetype)
-            x = [i for i in range(10, len(val)*10+10, 10)]
+                self.plot_folder, key)
+            if not os.path.exists(plot_path):
+                os.makedirs(plot_path)
+            # Plotting precision
+            x = [i for i in range(1, len(val['precision'])+1, 1)]
             fig, ax = plt.subplots()
-            ax.plot(x, val,  'bo', x, val, 'bj-')
-            ax.set_xticks(x)
+            ax.plot(x, val['precision'],  'bo',
+                    x, val['precision'], 'b--')
             ax.set_ylabel("Precision")
-            ax.set_title("Query: " + key)
-            fig.savefig(fname=plot_path, format=filetype, )
+            ax.set_title("Precision\n Query: " + key)
+            fig.savefig(fname=os.path.join(plot_path, filename), format=filetype, )
+
+            # Plotting recall
+            filename = key+"_plot_recall."+filetype
+            plot_path = os.path.join(
+                self.plot_folder, key)
+            if not os.path.exists(plot_path):
+                os.makedirs(os.path.join(plot_path))
+            x = [i for i in range(1, len(val['recall'])+1, 1)]
+            fig, ax = plt.subplots()
+            ax.plot(x, val['recall'],  'bo', x, val['recall'], 'b--')
+            ax.set_ylabel("Recall")
+            ax.set_title("Recall\n Query: " + key)
+            fig.savefig(fname=os.path.join(
+                plot_path, filename), format=filetype, )
+
+            # Plot precision_recall
+            filename = key+"_plot_precision_recall."+filetype
+            plot_path = os.path.join(self.plot_folder, key)
+            if not os.path.exists(plot_path):
+                os.makedirs(os.path.join(plot_path))
+            fig, ax = plt.subplots()
+            ax.set_ylabel("Precision")
+            ax.set_xlabel("Recall")
+            ax.set_title("Precision vs Recall\n Query: " + key)
+            ax.plot(val['recall'], val['precision'],  'bo',
+                    val['recall'], val['precision'],  'b--')
+            fig.savefig(fname=os.path.join(
+                plot_path, filename), format=filetype, )
 
 
 if __name__ == "__main__":
