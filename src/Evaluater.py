@@ -83,6 +83,7 @@ class Evaluater:
             result = json.loads(f.read())
         results = self.get_precision_recall(result)
         self.plot_precision_recall(results)
+        self.plot_average_precision_recall(results)
 
     def get_precision_recall(self, json_result):
         """
@@ -112,6 +113,56 @@ class Evaluater:
                 precision_results.append(true_positives/float(i+1))
         return results
 
+    def plot_average_precision_recall(self, results):
+        num_results = len(results.items())
+        average_prec = [0 for i in range(0, 50)]
+        average_rec = [0 for i in range(0, 50)]
+        for key, val in results.items():
+            for i, prec in enumerate(val['precision']):
+                average_prec[i] += prec
+            for j, rec in enumerate(val['recall']):
+                average_rec[j] += rec
+
+        for k in range(0, len(average_prec)):
+            average_prec[k] = average_prec[k]/float(num_results)
+        for l in range(0, len(average_prec)):
+            average_rec[l] = average_rec[l]/float(num_results)
+
+        # Average precision
+        filetype = "pdf"
+        filename = "average_precision."+filetype
+        fig, ax = plt.subplots()
+        x = [i for i in range(0, 50)]
+        ax.plot(x, average_prec)
+        ax.set_ylabel("Precision")
+        ax.set_title("Average Precision")
+        fig.savefig(fname=os.path.join(
+            self.plot_folder, filename), format=filetype, )
+        plt.close('all')
+
+        # Average recall
+        filetype = "pdf"
+        filename = "average_recall."+filetype
+        fig, ax = plt.subplots()
+        ax.plot(x, average_rec)
+        ax.set_ylabel("Recall")
+        ax.set_title("Average Recall")
+        fig.savefig(fname=os.path.join(
+            self.plot_folder, filename), format=filetype, )
+        plt.close('all')
+
+        # Average precision_recall
+        filetype = "pdf"
+        filename = "average_precision_recall."+filetype
+        fig, ax = plt.subplots()
+        ax.plot(average_rec, average_prec)
+        ax.set_ylabel("Precision")
+        ax.set_xlabel("Recall")
+        ax.set_title("Average Precision vs Recall")
+        fig.savefig(fname=os.path.join(
+            self.plot_folder, filename), format=filetype, )
+        plt.close('all')
+
     def plot_precision_recall(self, results):
         """
         Saves the fig_pures to file
@@ -133,7 +184,9 @@ class Evaluater:
                     x, val['precision'], 'b--')
             ax.set_ylabel("Precision")
             ax.set_title("Precision\n Query: " + key)
-            fig.savefig(fname=os.path.join(plot_path, filename), format=filetype, )
+            fig.savefig(fname=os.path.join(
+                plot_path, filename), format=filetype, )
+            plt.close('all')
 
             # Plotting recall
             filename = key+"_plot_recall."+filetype
@@ -148,6 +201,7 @@ class Evaluater:
             ax.set_title("Recall\n Query: " + key)
             fig.savefig(fname=os.path.join(
                 plot_path, filename), format=filetype, )
+            plt.close('all')
 
             # Plot precision_recall
             filename = key+"_plot_precision_recall."+filetype
@@ -162,6 +216,7 @@ class Evaluater:
                     val['recall'], val['precision'],  'b--')
             fig.savefig(fname=os.path.join(
                 plot_path, filename), format=filetype, )
+            plt.close('all')
 
 
 if __name__ == "__main__":
