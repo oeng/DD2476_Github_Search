@@ -124,6 +124,13 @@ class IndexSettings:
         }
     }
     }
+    """
+    Similarity can be one of BM25, classic, boolean
+    BM25 is Elasticsearch default similarity measure.
+    classic is regular tf-idf.
+    boolean: score should only be based on whether the query terms match or not. Boolean similarity
+    gives terms a score equal to their query boost.
+    """
     mappings_separate = {
         "java": {
             "properties": {
@@ -132,7 +139,7 @@ class IndexSettings:
                 "package": {"type": "text", "fielddata": "true", "analyzer": "camel",
                             "fields": {"raw": {"type": "keyword"}}},
                 "package_id": {"type": "integer"},
-                "name": {"type": "text", "analyzer": "camel"},
+                "name": {"type": "text", "analyzer": "camel", "similarity": "BM25"},
                 "start_row": {"type": "integer"},
                 "end_row": {"type": "integer"},
                 "return_type": {"type": "text"},
