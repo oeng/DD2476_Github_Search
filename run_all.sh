@@ -55,9 +55,9 @@ CRAWL_TIME=$1
 # maybe_download_elasticsearch
 
 # Starting elasticsearch in new process
-echo "Starting elasticsearch in new terminal and waiting 15 seconds for elasticsearch to set up"
+# echo "Starting elasticsearch in new terminal and waiting 15 seconds for elasticsearch to set up"
 # start_elasticsearch &
-sleep 15s
+# sleep 15s
 
 # Run crawler if needed for 5 minutes
 maybe_start_crawler "$CRAWL_TIME"
