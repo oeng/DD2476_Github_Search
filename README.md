@@ -1,11 +1,30 @@
-## Crawler and Indexer
-Python 3 is used. Source files in src/
+# Github search
 
-### Install python dependencies:
+## Run using run script
+
+### Install dependencies:
+1. Make sure Oracle JDK (version >= 8) is installed.
+2. Install python dependencies:
+
+    `pip install -r requirements.txt`
+3. Run the script and specify number of minutes to crawl (1 is enough for testing). The script will download `elasticsearch-6.2.4` if not present in the current directory, run the crawler if the directory `download_repo` is not present, start elasticsearch, run the indexer and finally launch the interface.
+```bash
+./run_all 1
+```
+
+## Run individual components
+The crawler and indexer use Python 3. Source files are located in `src/`
+
+Install python dependencies with:
+
 `pip install -r requirements.txt`
 
-### To crawl and index, run:
+The interface uses Java with JavaFX. Source files are located in `src/GithubSearchInterface/`
+
+### Crawler
 `python -m src.Crawler`
+
+### Indexer
 `python -m src.Indexer`
 
 ### To evaluate
@@ -23,29 +42,50 @@ To use elasticsearch to use the relevance scores for evaluation run:
 
 This will read the file content of `./evaluation_results/relevance_scoring_results/` and save the json response to `evaluation_results/`
 
-## Interface
+### Interface
 Source files in src/GithubSearchInterface/
 
 Java 8 with JavaFX is used.
 
 ### Dependencies:
+The dependencies are included in this repository but they were downloaded from the following places.
+
 - [richtextfx-0.9.0.jar](https://github.com/TomasMikula/RichTextFX/releases/download/v0.9.0/richtextfx-0.9.0.jar)
 - [org.json.jar](http://www.java2s.com/Code/JarDownload/org.json/org.json.jar.zip) (zipped)
 
 ### Runing the interface
-#### Windows
+#### Compiling and running on Windows
 ```bat
 cd src\GithubSearchInterface\
 if not exist classes mkdir classes
 javac -cp "imports/*" -d ./classes ./src/dd2476/project/*.java
 java -cp "classes;imports/*;src" dd2476.project.Main
 ```
+#### Running Jar-file on Linux
+```bash
+java -jar ./src/GithubSearchInterface/out/artifacts/GithubSearchInterface/GithubSearchInterface.jar
+```
 
 #### OS X
 *work in progress*
 
-#### Linux
-*work in progress*
+### Elasticsearch
+To download and extract:
+```bash
+wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.2.4.tar.gz
+wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.2.4.tar.gz.sha512
+shasum -a 512 -c elasticsearch-6.2.4.tar.gz.sha512 
+tar -xzf elasticsearch-6.2.4.tar.gz
+```
+To start:
+```bash
+cd elasticsearch-6.2.4
+./elasticsearch
+```
+To delete the index (in case you want to re-index):
+```bash
+rm -rf elasticsearch-6.2.4/data/nodes/0
+
 
 ## Project Specification
 
