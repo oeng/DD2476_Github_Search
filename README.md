@@ -1,6 +1,7 @@
 # Github search
 
 ## Run using run script
+Assumes no instance of elasticsearch is running.
 
 ### Install dependencies:
 1. Make sure Oracle JDK (version >= 8) is installed.
