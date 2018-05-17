@@ -1,14 +1,14 @@
 # Github search
 
 ## Run using run script
-Assumes no instance of elasticsearch is running.
+Assumes that elasticsearch is already running.
 
 ### Install dependencies:
 1. Make sure Oracle JDK (version >= 8) is installed.
 2. Install python dependencies:
 
     `pip install -r requirements.txt`
-3. Run the script and specify number of minutes to crawl (1 is enough for testing). The script will download `elasticsearch-6.2.4` if not present in the current directory, run the crawler if the directory `download_repo` is not present, start elasticsearch, run the indexer and finally launch the interface.
+3. Run the script and specify number of minutes to crawl (1 is enough for testing). The script will run the crawler if the directory `download_repo` is not present, run the indexer and finally launch the interface.
 ```bash
 ./run_all 1
 ```
