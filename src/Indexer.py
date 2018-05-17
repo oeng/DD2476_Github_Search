@@ -9,7 +9,7 @@ class Indexer:
         # Connection to elastic search
         # https://elasticsearch-py.readthedocs.io/en/master/api.html
         self.es = Elasticsearch()
-        self.index_to_use = 'test'
+        self.index_to_use = 'github_search'
 
         # https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-pattern-analyzer.html
         # https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping.html
@@ -24,7 +24,7 @@ class Indexer:
         )
 
         # To delete existing index:
-        # curl -X DELETE  'http://localhost:9200/test'
+        # curl -X DELETE  'http://localhost:9200/github_search'
 
     def index_document(self, d):
         """

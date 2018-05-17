@@ -19,7 +19,7 @@ import java.net.URL;
 
 public class Controller {
     // Name of the elasticsearch index
-    private final static String INDEX_NAME = "test";
+    private final static String INDEX_NAME = "github_search";
     // URL to the elasticsearch API
     private final static String ES_URL = "http://localhost:9200/";
     private int page = 0;

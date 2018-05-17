@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
 
-maybe_download_elasticsearch() {
-  if [ ! -d elasticsearch-6.2.4 ]; then
-    wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.2.4.tar.gz
-    wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.2.4.tar.gz.sha512
-    shasum -a 512 -c elasticsearch-6.2.4.tar.gz.sha512
-    tar -xzf elasticsearch-6.2.4.tar.gz
-    rm -rf elasticsearch-6.2.4.tar.gz
-    rm -rf elasticsearch-6.2.4.tar.gz.sha512
-  fi
-}
+# maybe_download_elasticsearch() {
+#   if [ ! -d elasticsearch-6.2.4 ]; then
+#     wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.2.4.tar.gz
+#     wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.2.4.tar.gz.sha512
+#     shasum -a 512 -c elasticsearch-6.2.4.tar.gz.sha512
+#     tar -xzf elasticsearch-6.2.4.tar.gz
+#     rm -rf elasticsearch-6.2.4.tar.gz
+#     rm -rf elasticsearch-6.2.4.tar.gz.sha512
+#   fi
+# }
 
 maybe_start_crawler() {
   if [ ! -d download_repo ]; then
@@ -20,18 +20,18 @@ maybe_start_crawler() {
   fi
 }
 
-start_elasticsearch() {
-  x-terminal-emulator -e ./elasticsearch-6.2.4/bin/elasticsearch
-}
+# start_elasticsearch() {
+#   konsole -e "./elasticsearch-6.2.4/bin/elasticsearch -E http.port=9200"
+# }
 
 run_indexer() {
-  if [ ! -d elasticsearch-6.2.4/data/nodes/0 ]; then
+  # if [ ! -d elasticsearch-6.2.4/data/nodes/0 ]; then
     echo "Running indexer, this might take a few minutes..."
     python3 -m src.Indexer
     echo "Indexing done!"
-  else
-    echo "Index already exists! Delete elasticsearch-6.2.4/data/nodes/0 and rerun script to re-index."
-  fi
+  # else
+  #   echo "Index already exists! Delete elasticsearch-6.2.4/data/nodes/0 and rerun script to re-index."
+  # fi
 }
 
 launch_interface() {
@@ -52,11 +52,11 @@ fi
 CRAWL_TIME=$1
 
 # Check if elasticsearch directory exists and if not, download it
-maybe_download_elasticsearch
+# maybe_download_elasticsearch
 
 # Starting elasticsearch in new process
 echo "Starting elasticsearch in new terminal and waiting 15 seconds for elasticsearch to set up"
-start_elasticsearch &
+# start_elasticsearch &
 sleep 15s
 
 # Run crawler if needed for 5 minutes

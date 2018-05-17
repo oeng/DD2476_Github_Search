@@ -2,7 +2,7 @@ import os
 
 
 class RelevanceScoringSettings:
-    index_used = "test"
+    index_used = "github_search"
     host = "http://localhost:9200"
     category = "function"
     response_json = 'evaluation_response.json'
