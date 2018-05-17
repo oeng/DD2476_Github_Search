@@ -18,38 +18,60 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 public class Controller {
+    // Name of the elasticsearch index
     private final static String INDEX_NAME = "test";
+    // URL to the elasticsearch API
     private final static String ES_URL = "http://localhost:9200/";
 
+    // List view for displaying search results
     @FXML
     ListView<PostingsEntry> resultsListView;
+
+    // Text field where the user enters a query string
     @FXML
     TextField queryField;
+
+    // Label that can be used to display information such as number of hits
     @FXML
     Label infoLabel;
+
+    // Toggle group used to group the radio buttons for selecting search method
     @FXML
     ToggleGroup toggleGroup;
+
+    // Radio buttons used to select search method
     @FXML
     RadioMenuItem functionSearchRadio;
     @FXML
     RadioMenuItem classSearchRadio;
     @FXML
     RadioMenuItem packageSearchRadio;
+
+    // Combo box used for selecting the number of results to display in the list view
     @FXML
     ComboBox<Integer> numResultsComboBox;
+
+    // Check box used to select whether the results should be filtered by return type
     @FXML
     CheckBox returnTypeCheckbox;
+
+    // Text field to get the return type specified by the user if return type filtering is enabled
     @FXML
     TextField returnTypeField;
 
+    /**
+     * This method is called right after the FXML objects are injected.
+     * Used to initialize the number of results combo box and adds an
+     * event listener to the list view.
+     */
     @FXML
     public void initialize() {
         infoLabel.setText("Press enter to search");
 
-        // How many results to show
+        // Populate options for the combo box for the number of results to display in the list view
         numResultsComboBox.getItems().addAll(10, 20, 30, 40, 50, 75, 100, 150, 200);
 
-        // Handle what happens when user clicks a result on the list
+        // Setup an event handler on the list view for what happens when the user clicks a result in the list view
         resultsListView.setOnMouseClicked((event) -> {
             // Find out which result item was clicked
             PostingsEntry clickedEntry = resultsListView.getSelectionModel().getSelectedItem();
@@ -61,12 +83,20 @@ public class Controller {
         });
     }
 
+    /**
+     * Opens a new window with the marked source code snippet for a postings entry.
+     *
+     * @param entry The postings entry that should have its details shown in a new window.
+     */
     private void openResultEntry(PostingsEntry entry) {
         int width = 600;
         int height = 800;
         int lineHeight = height / 50;
         int linesBeforeHighlight = 4;
+
+        // text area to show the contents of the source code
         InlineCssTextArea codeArea = new InlineCssTextArea();
+
         // Settings for the new window that we will open
         StackPane detailsLayout = new StackPane();
         detailsLayout.getChildren().add(codeArea);
@@ -75,55 +105,67 @@ public class Controller {
         detailsWindow.setScene(detailsScene);
         detailsWindow.setTitle("Showing result found in: " + entry.getRepo());
 
+        // Get the symbol used for new line on the system the interface is running on
         String newLineSymbol = System.getProperty("line.separator");
+
+        // Open the source code file the postings entry and read it line by line
         int lineNumber = 0;
-        int startPos = 0;
-        int endPos = 0;
         try (BufferedReader br = new BufferedReader(new FileReader(entry.getFilepath()))) {
             String line;
             while ((line = br.readLine()) != null) {
-                //if (lineNumber == entry.startPos - 1) {
-                //    /**
-                //     * Increment the startPos as long as we have not reached the
-                //     * method/functions/class start line.
-                //     */
-                //    startPos += line.getBytes().length;
-                //}
-                //if (lineNumber < entry.startPos) {
-                //    endPos += line.getBytes().length;
-                //}
-
                 // Quickfix for displaying package result
-
                 codeArea.appendText(String.format("%4d", lineNumber) + "   " + line + newLineSymbol);
+                // Mark the relevant code snippet in this source file, so it is easily visible to the user
                 if (lineNumber >= entry.startPos - 1 && lineNumber <= entry.endPos - 1) {
                     codeArea.setParagraphStyle(lineNumber, "-fx-background-color: #c8ccd0;");
                 }
                 ++lineNumber;
             }
+            // Scroll the view to the location of the code snippet
             codeArea.scrollToPixel(entry.startPos, 0);
         } catch (FileNotFoundException e) {
+            System.err.println("Warning: could not find " + entry.getFilepath());
             e.printStackTrace();
         } catch (IOException e) {
+            System.err.println("Error: could not read " + entry.getFilepath());
             e.printStackTrace();
         }
+        // Show the window containing the source code we just built
         detailsWindow.show();
+        // After the window is opened, scroll the code view
         Platform.runLater(() -> codeArea.scrollYBy((entry.startPos - linesBeforeHighlight) * lineHeight));
     }
 
+    /**
+     * Resets the list view and adds a new postings list to it.
+     *
+     * @param plist New postings list to be added to the list view
+     */
     private void updateListView(PostingsList plist) {
         resultsListView.getItems().clear();
         resultsListView.getItems().addAll(plist.postings);
     }
 
+    /**
+     * The main method used for performing a complete search operation with the
+     * user-specified query string.
+     *
+     * @param query The query object to search with.
+     *
+     * @return The resulting postings list containing all retrieved postings
+     */
     private PostingsList search(Query query) {
+        /* Create an empty postings list with the current query type for storing the
+         * retrieved postings entries. */
         PostingsList searchResults = new PostingsList(query.type);
+        // URL object to store the complete request URL to be sent to the elasticsearch API
         URL queryURL;
-        String key = "";
+        // The json object we will populate and send to the elasticsearch API
         JSONObject jsonBody = new JSONObject();
+        // Get the number of results we should show in the list view
         Integer numResults = numResultsComboBox.getValue();
-        Boolean filterReturnType = false;
         try {
+            // construct function search request
             if (query.type == QueryType.FUNCTIONS) {
                 jsonBody = new JsonQueryBody().getMatchQueryFilter(query.term, "name", "function", numResults);
                 if (returnTypeCheckbox.isSelected() && !returnTypeField.getText().isEmpty()) {
@@ -134,20 +176,28 @@ public class Controller {
                     jsonTermReturn.put("return_type", returnType);
                     jsonBody.getJSONObject("query").getJSONObject("bool").getJSONArray("filter").put(jsonFilterReturn);
                 }
-            } else if (query.type == QueryType.CLASSES) {
+            }
+
+            // construct class search request
+            else if (query.type == QueryType.CLASSES) {
                 jsonBody = new JsonQueryBody().getMatchQueryFilter(query.term, "name", "class", numResults);
-            } else if (query.type == QueryType.PACKAGE) {
+            }
+
+            // construct package search request
+            else if (query.type == QueryType.PACKAGE) {
                 jsonBody = new JsonQueryBody().getPackageQuery(query.term, "package", numResults);
             }
+
             // Open a connection to elasticsearch and send the request, receive response.
             queryURL = new URL(ES_URL + INDEX_NAME + "/_search/");
-            JSONObject jsonObject = this.getResponse(queryURL, jsonBody);
+            JSONObject jsonObject = getResponse(queryURL, jsonBody);
 
             // Parse the received JSON data
             JSONObject hitsObject = jsonObject.getJSONObject("hits");
             int nrofHits = hitsObject.getInt("total");
 
-            if (query.type != QueryType.PACKAGE) {
+            // Parse response for function or class search
+            if (query.type == QueryType.FUNCTIONS || query.type == QueryType.CLASSES) {
                 if (nrofHits > 0) {
                     JSONArray hitsArray = hitsObject.getJSONArray("hits");
                     for (int i = 0; i < hitsArray.length(); ++i) {
@@ -156,29 +206,21 @@ public class Controller {
                         foundEntry.filename = object.getString("filename");
                         foundEntry.filepath = object.getString("filepath");
                         foundEntry.pkg = object.getString("package");
-                        if (query.type == QueryType.FUNCTIONS || query.type == QueryType.CLASSES) {
-                            foundEntry.name = object.getString("name");
-                            foundEntry.startPos = object.getInt("start_row");
-                            foundEntry.endPos = object.getInt("end_row");
-                            searchResults.addPostingsEntry(foundEntry);
-                        } else if (query.type == QueryType.PACKAGE) {
-                            foundEntry.startPos = 0;
-                            searchResults.addPostingsEntry(foundEntry);
-                        } else {
-                            System.err.println("error: unknown query type");
-                            return searchResults;
-                        }
+                        foundEntry.name = object.getString("name");
+                        foundEntry.startPos = object.getInt("start_row");
+                        foundEntry.endPos = object.getInt("end_row");
+                        searchResults.addPostingsEntry(foundEntry);
                     }
                 } else {
                     System.out.println("Search returned 0 hits");
                 }
-            } else {
-                // Parse package response
+            }
+            // Parse response for package search
+            else if (query.type == QueryType.PACKAGE) {
                 JSONArray bucketObject = jsonObject.getJSONObject("aggregations").getJSONObject("package_id").getJSONArray("buckets");
                 for (int i = 0; i < bucketObject.length(); i++) {
                     PostingsEntry foundEntry = new PostingsEntry();
                     JSONObject object = bucketObject.getJSONObject(i);
-                    //System.out.println(packageId + " " + numberOfDocumentsInPackage);
                     // This array should always have a single element
                     JSONArray innerBucket = object.getJSONObject("package").getJSONArray("buckets");
                     if(innerBucket.length() != 1) {
@@ -188,18 +230,24 @@ public class Controller {
                     foundEntry.filename = "";
                     foundEntry.filepath = "";
                     foundEntry.docsInPackage = innerBucket.getJSONObject(0).getInt("doc_count");
-                    // Quickfix
+
                     foundEntry.name = "#docs" + Integer.toString(foundEntry.docsInPackage);
                     foundEntry.packageId = object.getInt("key");
                     foundEntry.pkg = innerBucket.getJSONObject(0).getString("key");
                     searchResults.addPostingsEntry(foundEntry);
                 }
             }
+            else {
+                System.err.println("ERROR: Unknown query type");
+            }
         } catch (MalformedURLException e) {
+            System.err.println("ERROR: Malformed URL");
             e.printStackTrace();
         } catch (IOException e) {
+            System.err.println("ERROR: Could not communicate with elasticsearch API");
             e.printStackTrace();
         } catch (JSONException e) {
+            System.err.println("ERROR: Malformed JSON");
             e.printStackTrace();
         }
         return searchResults;
@@ -234,48 +282,75 @@ public class Controller {
 
 
     // ----- EVENT HANDLERS -----
+
+    /**
+     * Enable/disable return type text field depending on whether the
+     * return type checkbox is selected or unselected.
+     */
     public void onReturnTypeCheckbox(ActionEvent e) {
         returnTypeField.setDisable(!returnTypeCheckbox.isSelected());
     }
 
-    // Enable/disable return type checkbox when search method selected
+    /**
+     * Enable/disable return type checkbox depending on search method.
+     */
     public void onSelectFunctionSearch(ActionEvent e) {
         returnTypeCheckbox.setDisable(false);
     }
+
+    /**
+     * Enable/disable return type checkbox depending on search method.
+     */
     public void onSelectClassSearch(ActionEvent e) {
         returnTypeCheckbox.setDisable(true);
         returnTypeField.setDisable(true);
         returnTypeCheckbox.setSelected(false);
     }
+
+    /**
+     * Enable/disable return type checkbox depending on search method.
+     */
     public void onSelectPackageSearch(ActionEvent e) {
         returnTypeCheckbox.setDisable(true);
         returnTypeField.setDisable(true);
         returnTypeCheckbox.setSelected(false);
     }
 
+    /**
+     * Handle enter button presses.
+     *
+     * If a query string is present in the query text field, issue a search
+     * of the selected search type.
+     */
     public void onEnter(ActionEvent e) {
         String queryFieldText = queryField.getText().trim();
+
         if (!queryFieldText.equals("")) {
             Query query;
+
             if (functionSearchRadio.isSelected()) {
                 query = new Query(queryFieldText, QueryType.FUNCTIONS);
                 PostingsList plist = search(query);
                 infoLabel.setText("Number of hits: " + plist.postings.size());
                 updateListView(plist);
-            } else if (classSearchRadio.isSelected()) {
+            }
+
+            else if (classSearchRadio.isSelected()) {
                 query = new Query(queryFieldText, QueryType.CLASSES);
                 PostingsList plist = search(query);
                 infoLabel.setText("Number of hits: " + plist.postings.size());
                 updateListView(plist);
-            } else if (packageSearchRadio.isSelected()) {
+            }
+
+            else if (packageSearchRadio.isSelected()) {
                 query = new Query(queryFieldText, QueryType.PACKAGE);
                 PostingsList plist = search(query);
                 infoLabel.setText("Number of hits: " + plist.postings.size());
                 updateListView(plist);
             }
-            // TODO: Implement search with combinations of function, class, package etc.
+
         } else {
-            System.out.println("empty query received");
+            System.out.println("Empty query received");
         }
     }
 }
