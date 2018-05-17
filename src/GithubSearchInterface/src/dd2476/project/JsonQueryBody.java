@@ -15,7 +15,7 @@ public class JsonQueryBody {
      * @param numResults
      * @return
      */
-    public JSONObject getMatchQueryFilter(String searchParameter, String field, String filter, Integer numResults){
+    public JSONObject getMatchQueryFilter(String searchParameter, String field, String filter, Integer numResults, Integer from){
         JSONObject jsonQuery = new JSONObject();
         JSONObject jsonBool = new JSONObject();
         JSONObject jsonOptions = new JSONObject();
@@ -28,7 +28,7 @@ public class JsonQueryBody {
         JSONObject jsonInnerQuery = new JSONObject();
         try {
             jsonQuery.put("query", jsonBool);
-            jsonQuery.put("from", 0);
+            jsonQuery.put("from", from);
             jsonQuery.put("size", numResults);
             jsonBool.put("bool", jsonOptions);
             jsonOptions.put("must", jsonMustOptions);
@@ -54,7 +54,7 @@ public class JsonQueryBody {
      * @param numResults
      * @return
      */
-    public JSONObject getPackageQuery(String searchParameter, String field, Integer numResults) {
+    public JSONObject getPackageQuery(String searchParameter, String field, Integer numResults, Integer from) {
         JSONObject jsonQuery = new JSONObject();
         JSONObject jsonMatch = new JSONObject();
         JSONObject jsonField = new JSONObject();
@@ -71,12 +71,13 @@ public class JsonQueryBody {
             jsonQuery.put("size", 0);
             jsonMatch.put("match", jsonField);
             jsonField.put(field, searchParameter);
-            jsonQuery.put("from", 0);
+            jsonQuery.put("from", from);
             jsonQuery.put("aggs", jsonAggs1);
             jsonAggs1.put("package_id", jsonPackageId);
             jsonPackageId.put("terms", jsonPackageIdField);
             jsonPackageIdField.put("field", "package_id");
             jsonPackageIdField.put("size", numResults);
+            jsonPackageIdField.put("from", from);
             jsonPackageId.put("aggs", jsonAggs2);
             jsonAggs2.put("package", jsonPackageTerms);
             jsonPackageTerms.put("terms", jsonPackageField);

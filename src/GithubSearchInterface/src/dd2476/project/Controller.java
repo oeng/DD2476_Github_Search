@@ -22,6 +22,7 @@ public class Controller {
     private final static String INDEX_NAME = "test";
     // URL to the elasticsearch API
     private final static String ES_URL = "http://localhost:9200/";
+    private int page = 0;
 
     // List view for displaying search results
     @FXML
@@ -59,6 +60,12 @@ public class Controller {
     @FXML
     TextField returnTypeField;
 
+    @FXML
+    Button prevButton;
+
+    @FXML
+    Button nextButton;
+
     /**
      * This method is called right after the FXML objects are injected.
      * Used to initialize the number of results combo box and adds an
@@ -70,6 +77,7 @@ public class Controller {
 
         // Populate options for the combo box for the number of results to display in the list view
         numResultsComboBox.getItems().addAll(10, 20, 30, 40, 50, 75, 100, 150, 200);
+        numResultsComboBox.getSelectionModel().selectFirst();
 
         // Setup an event handler on the list view for what happens when the user clicks a result in the list view
         resultsListView.setOnMouseClicked((event) -> {
@@ -146,6 +154,10 @@ public class Controller {
         resultsListView.getItems().addAll(plist.postings);
     }
 
+    private Integer getFrom() {
+        return page * numResultsComboBox.getValue();
+    }
+
     /**
      * The main method used for performing a complete search operation with the
      * user-specified query string.
@@ -167,7 +179,7 @@ public class Controller {
         try {
             // construct function search request
             if (query.type == QueryType.FUNCTIONS) {
-                jsonBody = new JsonQueryBody().getMatchQueryFilter(query.term, "name", "function", numResults);
+                jsonBody = new JsonQueryBody().getMatchQueryFilter(query.term, "name", "function", numResults, getFrom());
                 if (returnTypeCheckbox.isSelected() && !returnTypeField.getText().isEmpty()) {
                     String returnType = returnTypeField.getText();
                     JSONObject jsonTermReturn = new JSONObject();
@@ -180,12 +192,12 @@ public class Controller {
 
             // construct class search request
             else if (query.type == QueryType.CLASSES) {
-                jsonBody = new JsonQueryBody().getMatchQueryFilter(query.term, "name", "class", numResults);
+                jsonBody = new JsonQueryBody().getMatchQueryFilter(query.term, "name", "class", numResults, getFrom());
             }
 
             // construct package search request
             else if (query.type == QueryType.PACKAGE) {
-                jsonBody = new JsonQueryBody().getPackageQuery(query.term, "package", numResults);
+                jsonBody = new JsonQueryBody().getPackageQuery(query.term, "package", numResults, getFrom());
             }
 
             // Open a connection to elasticsearch and send the request, receive response.
@@ -317,12 +329,38 @@ public class Controller {
     }
 
     /**
+     * Handle prev button press
+     */
+    public void onPrevPress(ActionEvent e) {
+        if (page > 0) {
+            page--;
+        }
+        searchAction();
+    }
+
+    /**
+     * Handle next button press
+     */
+    public void onNextPress(ActionEvent e) {
+        page++;
+        searchAction();
+    }
+
+    /**
      * Handle enter button presses.
      *
      * If a query string is present in the query text field, issue a search
      * of the selected search type.
      */
     public void onEnter(ActionEvent e) {
+        page = 0;
+        searchAction();
+    }
+
+    /**
+     * Perform a search and update the result box
+     */
+    private void searchAction() {
         String queryFieldText = queryField.getText().trim();
 
         if (!queryFieldText.equals("")) {
