@@ -308,6 +308,8 @@ public class Controller {
      */
     public void onSelectFunctionSearch(ActionEvent e) {
         returnTypeCheckbox.setDisable(false);
+        nextButton.setDisable(false);
+        prevButton.setDisable(false);
     }
 
     /**
@@ -317,6 +319,8 @@ public class Controller {
         returnTypeCheckbox.setDisable(true);
         returnTypeField.setDisable(true);
         returnTypeCheckbox.setSelected(false);
+        nextButton.setDisable(false);
+        prevButton.setDisable(false);
     }
 
     /**
@@ -326,6 +330,8 @@ public class Controller {
         returnTypeCheckbox.setDisable(true);
         returnTypeField.setDisable(true);
         returnTypeCheckbox.setSelected(false);
+        nextButton.setDisable(true);
+        prevButton.setDisable(true);
     }
 
     /**

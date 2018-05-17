@@ -68,16 +68,15 @@ public class JsonQueryBody {
         JSONObject jsonPackageField = new JSONObject();
         try {
             jsonQuery.put("query", jsonMatch);
-            jsonQuery.put("size", 0);
+            jsonQuery.put("size", numResults);
+            //jsonQuery.put("from", from);
             jsonMatch.put("match", jsonField);
             jsonField.put(field, searchParameter);
-            jsonQuery.put("from", from);
             jsonQuery.put("aggs", jsonAggs1);
             jsonAggs1.put("package_id", jsonPackageId);
             jsonPackageId.put("terms", jsonPackageIdField);
             jsonPackageIdField.put("field", "package_id");
             jsonPackageIdField.put("size", numResults);
-            jsonPackageIdField.put("from", from);
             jsonPackageId.put("aggs", jsonAggs2);
             jsonAggs2.put("package", jsonPackageTerms);
             jsonPackageTerms.put("terms", jsonPackageField);
@@ -86,6 +85,7 @@ public class JsonQueryBody {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        System.out.println(jsonQuery);
         return jsonQuery;
     }
 }
