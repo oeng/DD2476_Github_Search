@@ -100,7 +100,7 @@ rm -rf elasticsearch-6.2.4/data/nodes/0
 
 ## Additional criteria, 2 needed for C, 3 needed for B etc
 
-- [ ] The solution to the problem is novel in some respect (i.e., it has not been published before in a book, report, article or paper). A novel combination of known techniques is fine.
-- [ ] The results are evaluated, preferably on realistic data, preferably using methods from the literature.
-- [ ] The poster presentation is clear and understandable to another student who has not read the report or references in it.
-- [ ] The report is clear, complete, technically correct, and written in grammatically correct English.
+- [x] The solution to the problem is novel in some respect (i.e., it has not been published before in a book, report, article or paper). A novel combination of known techniques is fine.
+- [x] The results are evaluated, preferably on realistic data, preferably using methods from the literature.
+- [x] The poster presentation is clear and understandable to another student who has not read the report or references in it.
+- [x] The report is clear, complete, technically correct, and written in grammatically correct English.
