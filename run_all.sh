@@ -30,7 +30,7 @@ run_indexer() {
     python3 -m src.Indexer
     echo "Indexing done!"
   else
-    echo "Index already exists! Delete elasticsearch/data/nodes/0 and rerun script to re-index."
+    echo "Index already exists! Delete elasticsearch-6.2.4/data/nodes/0 and rerun script to re-index."
   fi
 }
 
