@@ -1,6 +1,3 @@
-import sys
-from collections import deque
-
 from elasticsearch import Elasticsearch, helpers
 
 from src.Analyzer import Analyzer
@@ -8,9 +5,6 @@ from src.Common import IndexSettings
 
 
 class Indexer:
-    # TODO probably use CamelCase serializer or similar for function and class names, getValue to get value
-    # TODO use some serializer for package name, com.google.guava to com google guava
-
     def __init__(self):
         # Connection to elastic search
         # https://elasticsearch-py.readthedocs.io/en/master/api.html
@@ -55,16 +49,15 @@ class Indexer:
         analyzer = Analyzer()
         # https://elasticsearch-py.readthedocs.io/en/master/helpers.html?highlight=bulk
         for success, info in helpers.parallel_bulk(
-            self.es,
-            # analyzer.get_analyzed_file(),
-            analyzer.get_analyzed_file_separate(),
-            thread_count=4,
-            index=self.index_to_use,
-            doc_type='java', chunk_size=50):
+                self.es,
+                # analyzer.get_analyzed_file(),
+                analyzer.get_analyzed_file_separate(),
+                thread_count=4,
+                index=self.index_to_use,
+                doc_type='java', chunk_size=50
+        ):
             if not success:
                 print(info)
-        # for d in analyzer.get_analyzed_file():
-        # self.index_document(d)
 
 
 if __name__ == '__main__':

@@ -38,7 +38,8 @@ class RelevanceScoring:
             num_scored += 1
             self.save_data(scored, search_string)
 
-    def save_data(self, scored, search_string):
+    @staticmethod
+    def save_data(scored, search_string):
         """
         Saves the relevance scoring and id to file as csv
         """
@@ -49,7 +50,8 @@ class RelevanceScoring:
         with open(filepath, "w") as f:
             f.writelines(scored)
 
-    def get_document_content(self, filepath, start, end):
+    @staticmethod
+    def get_document_content(filepath, start, end):
         """
         Opens the document with the method/class
         :return string method/class body
@@ -71,7 +73,8 @@ class RelevanceScoring:
             index=RelevanceScoringSettings.index_used, body=search_body)
         return res
 
-    def get_json_body(self, search_term):
+    @staticmethod
+    def get_json_body(search_term):
         """
         Builds the json body based upon search string and category
         :return dict (json body)

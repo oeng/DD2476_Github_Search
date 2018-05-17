@@ -1,10 +1,9 @@
 import glob
-from collections import namedtuple
-
 import javalang
 from javalang import tree
 
 import time
+
 
 class JavaParser:
     def __init__(self):
@@ -14,6 +13,7 @@ class JavaParser:
         self.functions = []
         self.classes = []
         self.content = []
+        self.brace_prune_pointer = 0
 
     def parse_separate(self, content):
         """
@@ -39,13 +39,13 @@ class JavaParser:
                      'end_row': end_row}
                 self.content.append(f)
             elif isinstance(node, tree.MethodDeclaration):
-                if(node.return_type is not None):
+                if node.return_type is not None:
                     return_type = node.return_type.name
                 else:
                     return_type = 'void'
                 start_row = node.position[0]
                 # handle functions without a body
-                if node.body != None:
+                if node.body is not None:
                     end_row = self.get_end_row(start_row)
                 else:
                     end_row = start_row
@@ -75,14 +75,14 @@ class JavaParser:
                 f = {'name': node.name, 'start_row': start_row, 'end_row': end_row}
                 self.classes.append(f)
             elif isinstance(node, tree.MethodDeclaration):
-                if(node.return_type is not None):
+                if node.return_type is not None:
                     return_type = node.return_type.name
                 else:
                     return_type = 'void'
                 # attrs = ("type_parameters", "return_type", "name", "parameters", "throws", "body")
                 start_row = node.position[0]
                 # handle functions without a body
-                if node.body != None:
+                if node.body is not None:
                     end_row = self.get_end_row(start_row)
                 else:
                     end_row = start_row
@@ -90,7 +90,6 @@ class JavaParser:
                      'end_row': end_row, 'return_type': return_type}
                 # f = {'name': node.name, 'row': row}
                 self.functions.append(f)
-
 
     def get_package_name(self):
         """
@@ -126,7 +125,7 @@ class JavaParser:
         """
         Finds end row of body declaration of classes and methods
 
-        TODO: Optimize. Iterates from start of set of token.
+        Could be optimized? Iterates from start of set of token?
               Slim down to start iterate at start_row
 
         :param: starting row
@@ -159,6 +158,10 @@ class JavaParser:
 
 
 def test():
+    """
+    Test function for development
+    :return:
+    """
     i = 0
     parser = JavaParser()
 
@@ -174,6 +177,7 @@ def test():
 
     print("Items in content: %d", len(content))
     print("time : %d", t1-t0)
+
 
 if __name__ == '__main__':
     test()

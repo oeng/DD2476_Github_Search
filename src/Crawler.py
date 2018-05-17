@@ -2,15 +2,11 @@ import base64
 import glob
 import tarfile
 import tempfile
-
 import os
-
 import pickle
 import requests
 import time
-
 import sys
-
 import shutil
 
 
@@ -29,6 +25,9 @@ class Crawler:
         self.language = "java"
         self.file_storage = "download_repo"  # If you change this, also change the entry in .gitignore
         self.page = os.path.join(self.file_storage, "page.pickle")
+
+        # Max repo size
+        # Note: this does not work, possible due to chunking
         # For example 1048576 is 10MB
         self.max_tarball_size = 1048576  # In bytes
 
@@ -228,14 +227,6 @@ class Crawler:
                 os.makedirs(self.file_storage)
             with open(self.page, "wb") as f:
                 pickle.dump(p, f)
-
-def test():
-    crawler = Crawler()
-    #for items in crawler.search_repos_generator(150):
-    #    print(items)
-    url = "https://api.github.com/repos/iluwatar/java-design-patterns"
-    crawler.download_repo(url)
-
 
 if __name__ == "__main__":
     Crawler().start()

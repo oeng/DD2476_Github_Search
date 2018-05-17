@@ -21,8 +21,7 @@ class Evaluater:
         self.relevant_documents = 100
 
     def run(self):
-        relevance_request_body = {}
-        relevance_request_body["requests"] = []
+        relevance_request_body = {"requests": []}
         for filename in os.listdir(self.relevance_scoring_folder):
             evaluate_body = {}
             if not filename.startswith("."):
