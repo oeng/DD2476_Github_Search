@@ -80,13 +80,13 @@ tar -xzf elasticsearch-6.2.4.tar.gz
 ```
 To start:
 ```bash
-cd elasticsearch-6.2.4
+cd elasticsearch-6.2.4/bin
 ./elasticsearch
 ```
 To delete the index (in case you want to re-index):
 ```bash
 rm -rf elasticsearch-6.2.4/data/nodes/0
-
+```
 
 ## Project Specification
 
