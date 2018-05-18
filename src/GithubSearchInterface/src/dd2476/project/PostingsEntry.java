@@ -5,7 +5,7 @@ package dd2476.project;
  */
 class PostingsEntry {
     // Path to the root directory which all downloaded code repositories are located within.
-    private static final String REPO_PATH = "../../download_repo/";
+    private static final String REPO_PATH = "download_repo/";
     String filename;
     String filepath;
     String pkg;
